@@ -1,6 +1,4 @@
-import dbConnect from '../../../../lib/db';
-import User from '../../../../models/User';
-import { getSession } from '../../../../lib/auth';
+import { getSession } from '../../../../lib/auth.js';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -11,14 +9,16 @@ export async function GET() {
       return NextResponse.json({ user: null });
     }
 
-    await dbConnect();
-
-    const user = await User.findById(userId).select('-password');
-    if (!user) {
-      return NextResponse.json({ user: null });
-    }
-
-    return NextResponse.json({ user });
+    // For static auth, we'll return the user from session storage
+    // In a real app, you'd fetch from database
+    // For now, return a basic response indicating session exists
+    return NextResponse.json({ 
+      user: { 
+        _id: userId,
+        // Session exists but we don't have full user data in static mode
+        // The frontend AuthContext will handle this
+      } 
+    });
   } catch (error) {
     console.error('Fetch current user error:', error);
     return NextResponse.json(
