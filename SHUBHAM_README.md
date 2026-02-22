@@ -1016,12 +1016,62 @@ By building all these APIs, I truly became a Backend Developer. I understand how
 
 ## 👥 Team Division Reference
 
-| Team Member | Week 2 Tasks |
-|-------------|--------------|
+| Team Member | Phase 2 Tasks |
+|-------------|---------------|
 | **Shubham Mirarkar** | ALL complaint APIs, status update logic, admin middleware, user management APIs |
 | **Jayraj Nawhale** | New Complaint Form UI, User Dashboard, Sidebar component |
 | **Atharva Bhujbal** | Admin Dashboard pages, ComplaintTable, StatsCard components |
-| **Raj Vairat** | StatusBadge, PriorityBadge, color styling, end-to-end testing |
+| **Raj Vairat** | StatusBadge, PriorityBadge, color styling, testing |
+
+---
+
+## 🗓️ Phase 3 — My Remaining Tasks
+
+| # | Task | File |
+|---|------|------|
+| 1 | Add text search + date range filter + pagination to `GET /api/complaints` | `app/api/complaints/route.js` |
+| 2 | Add pagination to `GET /api/complaints/user` | `app/api/complaints/user/route.js` |
+
+Enhancements for `GET /api/complaints`:
+
+- Read `search`, `dateFrom`, `dateTo`, `page`, `limit` from query params
+- Build `filter.$or` for text search against title, description, ticketId
+- Build `filter.createdAt` range for date filtering
+- Use `.skip((page-1)*limit).limit(limit).lean()` for efficient pagination
+- Return `total` count alongside complaints array for the UI paginator
+
+---
+
+## 🗓️ Phase 4 — My Tasks (Final Phase)
+
+I am responsible for **Reports APIs, PDF/Excel export, User Profile APIs, Admin Settings, Department Management, and Deployment**.
+
+| # | Task | File |
+|---|------|------|
+| 1 | `GET /api/reports/overview` — aggregate stats + charts data | `api/reports/overview/route.js` |
+| 2 | `GET /api/reports/export/pdf` — generate PDF (jspdf) | `api/reports/export/pdf/route.js` |
+| 3 | `GET /api/reports/export/excel` — generate Excel (xlsx) | `api/reports/export/excel/route.js` |
+| 4 | `PUT /api/users/profile` — update name and phone | `api/users/profile/route.js` |
+| 5 | `PUT /api/users/password` — verify old, hash new with bcrypt | `api/users/password/route.js` |
+| 6 | `POST /api/users/avatar` — upload and save profile photo | `api/users/avatar/route.js` |
+| 7 | `Setting.js` model + `GET/PUT /api/admin/settings` | `models/Setting.js` + API route |
+| 8 | `Department.js` model + CRUD APIs (GET / POST / PUT / DELETE) | `models/Department.js` + 4 routes |
+| 9 | Deploy to Vercel — configure environment variables | Production |
+
+Install Phase 4 dependencies:
+```
+npm install jspdf xlsx
+```
+
+### What I Am Learning in Phase 4
+
+**PDF Generation (jspdf):** Call `jsPDF` constructor, draw text and auto-tables onto the canvas, then return the buffer as an `application/pdf` response from the API. The browser triggers an automatic download.
+
+**Excel Export (xlsx):** Use `XLSX.utils.aoa_to_sheet(data)` to convert a 2D JavaScript array into a worksheet, then `XLSX.write(wb, { type: 'buffer' })` to produce a downloadable `.xlsx` file.
+
+**MongoDB Aggregation Pipeline:** The `$group` stage groups documents by a field and lets you count or sum values within each group — like SQL GROUP BY. Much faster than loading all documents and counting in JavaScript.
+
+**Settings as Key-Value Store:** The Setting model stores system configuration as `{ key, value, category }` pairs. This lets admins change things like `escalationDays` without modifying code.
 
 ---
 

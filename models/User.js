@@ -27,12 +27,16 @@ const UserSchema = new mongoose.Schema(
     department: {
       type: String,
     },
-    isActive: {
-      type: Boolean,
-      default: true,
+    avatar: {
+      type: String,
+      default: null,
     },
   },
   { timestamps: true }
 );
+
+// Performance indexes
+UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ role: 1 });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

@@ -790,16 +790,63 @@ I am incredibly proud of Week 1. The foundation I laid allowed my teammates in W
 
 ## 👥 Team Division Reference
 
-| Team Member | Week 1 Tasks |
-|-------------|--------------|
+| Team Member | Phase 1 Tasks |
+|-------------|---------------|
 | **Jayraj Nawhale** | Login page, Register page, Home page, Session Cookies, Route Guards, Header Nav |
-| **Shubham Mirarkar** | Auth API routes (login, register, logout), Password hashing with bcrypt |
-| **Atharva Bhujbal** | MongoDB connection (`lib/db.js`), User model (`models/User.js`), Tailwind config, Color theme, Mobile testing |
+| **Shubham Mirarkar** | Auth API routes, Password hashing with bcrypt |
+| **Atharva Bhujbal** | MongoDB connection, User model, Tailwind config |
+| **Raj Vairat** | StatusBadge, PriorityBadge, color styling |
 
 ---
 
-*Prepared by: Jayraj Nawhale*  
-*Enrollment: 23211830526*  
-*JSPM's Jayawantrao Sawant Polytechnic, Pune*  
-*Computer Engineering Department — TYCO3*  
+## 🗓️ Phase 3 — My Remaining Tasks
+
+In Phase 3, I integrate Atharva's advanced components into the user-side dashboard.
+
+| # | Task | File |
+|---|------|------|
+| 1 | Add `AdvancedSearch` to user complaints listing | `app/dashboard/complaints/page.jsx` |
+| 2 | Add Notifications link to sidebar nav items | `app/dashboard/layout.jsx` |
+
+For the sidebar nav link, add to the nav items array in `layout.jsx`:
+```
+{ href: '/dashboard/notifications', label: 'Notifications', icon: Bell }
+```
+
+---
+
+## 🗓️ Phase 4 — My Tasks (Final Phase)
+
+I am responsible for the **User Profile page, Admin Settings UI, and main README**.
+
+| # | Task | File |
+|---|------|------|
+| 1 | User Profile page — name, email, phone, role, avatar display | `app/dashboard/profile/page.jsx` |
+| 2 | `ProfileForm` — edit name and phone | `components/profile/ProfileForm.jsx` |
+| 3 | `PasswordForm` — change password, strength indicator | `components/profile/PasswordForm.jsx` |
+| 4 | `AvatarUpload` — pick and preview profile photo | `components/profile/AvatarUpload.jsx` |
+| 5 | Admin Settings page (UI only, calls Shubham's APIs) | `app/admin/settings/page.jsx` |
+| 6 | Update main README.md with complete project docs | `README.md` |
+
+### Profile Page Structure
+
+The profile page composes three sub-components:
+- `AvatarUpload` — shows current avatar, lets user pick a new image file and preview it instantly (no upload until Save is clicked)
+- `ProfileForm` — controlled inputs for name and phone; calls `PUT /api/users/profile` on submit
+- `PasswordForm` — current password + new password + confirm; shows strength bar; calls `PUT /api/users/password`
+
+### What I Am Learning in Phase 4
+
+**Controlled Forms:** Every character updates React state immediately, enabling real-time validation feedback.
+
+**Avatar Preview Before Upload:** Use `URL.createObjectURL(file)` to display the chosen image locally before sending it to the server — makes the UI feel instant.
+
+**Password Strength:** Check for length, uppercase, digits, and symbols and show a color-coded bar so users know how strong their password is.
+
+---
+
+*Prepared by: Jayraj Nawhale*
+*Enrollment: 23211830526*
+*JSPM's Jayawantrao Sawant Polytechnic, Pune*
+*Computer Engineering Department — TYCO3*
 *Academic Year 2025-26*

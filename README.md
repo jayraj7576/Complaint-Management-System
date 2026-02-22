@@ -18,7 +18,8 @@ This eliminates the need for paper-based complaint forms and untracked verbal gr
 |------|----------------|------|
 | **Shubham Mirarkar** | 23211830520 | Team Lead & Backend Developer |
 | **Jayraj Nawhale** | 23211830526 | Frontend Developer |
-| **Atharva Bhujbal** | 23211830502 | Admin Dashboard & Database |
+| **Atharva Bhujbal** | 23211830502 | Advanced Features & Database |
+| **Raj Vairat** | 23211830553 | UI/UX & Testing |
 
 ---
 
@@ -26,19 +27,28 @@ This eliminates the need for paper-based complaint forms and untracked verbal gr
 
 ### For Students / Users
 - 🔐 **Secure Registration & Login** with encrypted passwords
-- 📝 **Submit Complaints** with category, priority, and department selection
+- 📝 **Submit Complaints** with category, priority, department, and file attachments
 - 📋 **My Complaints Dashboard** — view all personal complaints with live status
-- 🔍 **Complaint Detail View** — see full history, timeline, and admin remarks
-- 💬 **Add Remarks** — communicate with the admin team on any ticket
+- 🔍 **Advanced Search** — filter by status, category, priority, date range
+- 📜 **History Timeline** — see every action ever taken on a complaint
+- 🖼️ **Attachment Gallery** — view uploaded photos and PDFs
+- ⚠️ **Escalation** — escalate unresolved complaints with a reason
+- 🔔 **Real-time Notifications** — bell icon with unread count (polls every 30s)
+- 👤 **User Profile** — edit name, phone, change password, upload avatar
 - 🎟️ **Auto-generated Ticket IDs** like `CMP-20250115001`
 
 ### For Administrators
-- 🛡️ **Protected Admin Dashboard** — accessible only to users with the ADMIN role
-- 📊 **System Statistics** — total, pending, in-progress, and resolved counts
-- 📂 **All Complaints View** — manage every complaint filed across the institution
-- 🔽 **Advanced Filtering** — filter by Status, Category, and Priority
-- ✅ **Status Management** — move tickets from Pending → In Progress → Resolved / Rejected
-- 👥 **User Management** — view all registered users, promote roles, deactivate accounts
+- 🛡️ **Protected Admin Dashboard** — accessible only to ADMIN role
+- 📊 **Live Statistics** — total, pending, in-progress, escalated, resolved counts
+- 📈 **Dashboard Charts** — Status pie, Category bar, Daily line (Recharts)
+- 📂 **All Complaints View** — manage every complaint across the institution
+- 🔍 **Advanced Filtering** — filter by Status, Category, Priority, Date, Search
+- ✅ **Status Management** — move tickets through entire lifecycle
+- 🗂️ **Bulk Operations** — update status or assign multiple complaints at once
+- 👥 **User Management** — view users, promote roles, manage accounts
+- 📄 **Reports & Analytics** — comprehensive reports with PDF and Excel export
+- ⚙️ **System Settings** — configure app name, escalation days, file limits
+- 🏢 **Department Management** — add, edit, delete departments
 
 ---
 
@@ -50,12 +60,14 @@ This eliminates the need for paper-based complaint forms and untracked verbal gr
 | **Language** | JavaScript (ES6+) |
 | **Frontend Styling** | Tailwind CSS |
 | **UI Components** | Shadcn/UI |
+| **Charts** | Recharts |
 | **Database** | MongoDB (via MongoDB Atlas) |
 | **ORM** | Mongoose |
 | **Authentication** | Custom session cookies (HTTP-Only) |
 | **Password Hashing** | bcryptjs |
-| **Form Validation** | react-hook-form + Zod |
-| **Notifications** | Sonner (toast notifications) |
+| **File Upload** | Node.js `fs` + Next.js `formData()` |
+| **PDF Export** | jspdf |
+| **Excel Export** | xlsx |
 | **Version Control** | Git & GitHub |
 
 ---
@@ -65,64 +77,64 @@ This eliminates the need for paper-based complaint forms and untracked verbal gr
 ```
 src/
 ├── app/
-│   ├── (auth)/                 ← Public login & register pages
-│   │   ├── login/page.jsx
-│   │   └── register/page.jsx
-│   │
-│   ├── dashboard/              ← Protected student area
-│   │   ├── layout.jsx          ← Auth guard (checks session cookie)
-│   │   ├── page.jsx            ← User home dashboard
-│   │   └── complaints/
-│   │       ├── page.jsx        ← "My Complaints" listing
-│   │       ├── new/page.jsx    ← Submit new complaint form
-│   │       └── [id]/page.jsx   ← Single complaint detail view
-│   │
-│   ├── admin/                  ← Protected admin-only area
-│   │   ├── middleware.js       ← Role-based route guard
-│   │   ├── layout.jsx
-│   │   ├── page.jsx            ← Admin overview dashboard
-│   │   ├── complaints/
-│   │   │   ├── page.jsx        ← All complaints management
-│   │   │   └── [id]/page.jsx   ← Admin complaint detail/edit
-│   │   └── users/page.jsx      ← User management panel
-│   │
-│   └── api/                    ← Backend REST API routes
-│       ├── auth/
-│       │   ├── login/route.js
-│       │   ├── register/route.js
-│       │   ├── logout/route.js
-│       │   └── me/route.js
-│       ├── complaints/
-│       │   ├── route.js              ← POST (create) / GET (admin all)
-│       │   ├── user/route.js         ← GET user's own complaints
-│       │   └── [id]/
-│       │       ├── route.js          ← GET single complaint
-│       │       ├── status/route.js   ← PUT update status
-│       │       └── remarks/route.js  ← POST add remark
-│       └── users/
-│           ├── route.js              ← GET all users (admin)
-│           └── [id]/route.js         ← PUT update user role
+│   ├── (auth)/                    ← Public login & register pages
+│   ├── dashboard/                 ← Protected student area
+│   │   ├── page.jsx               ← User home dashboard
+│   │   ├── complaints/            ← My Complaints + Detail + New
+│   │   ├── notifications/         ← Notifications page
+│   │   └── profile/               ← User profile page
+│   └── admin/                     ← Protected admin-only area
+│       ├── page.jsx               ← Admin dashboard with charts
+│       ├── complaints/            ← All complaints + detail
+│       ├── users/                 ← User management
+│       ├── reports/               ← Reports & analytics page
+│       └── settings/              ← System settings page
+│
+├── api/
+│   ├── auth/                      ← login, register, logout, me
+│   ├── complaints/                ← CRUD + status + remarks + history + escalate
+│   ├── complaints/bulk/           ← Bulk status update, assign, delete
+│   ├── notifications/             ← CRUD + mark read
+│   ├── upload/                    ← File upload route
+│   ├── reports/                   ← Overview + PDF + Excel export
+│   ├── users/                     ← Profile + password + avatar
+│   └── admin/                     ← Settings + departments
 │
 ├── components/
-│   ├── ui/                     ← Shadcn base components
-│   ├── complaints/
-│   │   ├── ComplaintCard.jsx
-│   │   ├── ComplaintForm.jsx
-│   │   ├── ComplaintTable.jsx
-│   │   ├── StatusBadge.jsx
-│   │   └── PriorityBadge.jsx
-│   ├── dashboard/
-│   │   └── StatsCard.jsx
-│   └── layout/
-│       └── Sidebar.jsx
+│   ├── complaints/                ← ComplaintForm, AdvancedSearch, HistoryTimeline,
+│   │                                 FileUpload, AttachmentGallery, EscalateButton
+│   ├── charts/                    ← StatusPieChart, CategoryBarChart, DailyLineChart
+│   ├── notifications/             ← NotificationBell, NotificationList
+│   ├── reports/                   ← ReportCard, DateRangePicker, ExportButtons
+│   ├── profile/                   ← ProfileForm, PasswordForm, AvatarUpload
+│   └── layout/                    ← Sidebar (with NotificationBell)
 │
 ├── models/
-│   ├── User.js                 ← MongoDB User schema
-│   └── Complaint.js            ← MongoDB Complaint schema + Ticket ID hook
+│   ├── User.js                    ← User schema + indexes + avatar field
+│   ├── Complaint.js               ← Complaint schema + 7 indexes + attachments
+│   ├── Notification.js            ← Notification schema + indexes
+│   ├── ComplaintHistory.js        ← History/audit trail schema
+│   ├── Setting.js                 ← Key-value settings model
+│   └── Department.js              ← Department management model
 │
 └── lib/
-    ├── auth.js                 ← Session cookie utilities
-    └── db.js                   ← MongoDB connection handler
+    ├── auth.js                    ← Session cookie utilities
+    ├── db.js                      ← MongoDB connection handler
+    ├── notifications.js           ← createNotification, notifyStatusChange helpers
+    ├── history.js                 ← recordHistory helper
+    ├── upload.js                  ← validateFile, saveFile helpers
+    ├── dateUtils.js               ← formatTimeAgo, formatDate helpers
+    └── cache.js                   ← In-memory cache with TTL
+
+public/
+└── uploads/
+    ├── complaints/                ← Complaint file attachments
+    └── avatars/                   ← User profile photos
+
+docs/
+├── API_DOCS.md                    ← Full API documentation
+├── USER_MANUAL.md                 ← User guide
+└── DEPLOYMENT.md                  ← Deployment instructions
 ```
 
 ---
@@ -130,7 +142,6 @@ src/
 ## 🚀 Getting Started
 
 ### Prerequisites
-Make sure you have the following installed:
 - **Node.js** v18 or higher
 - **npm** or **yarn**
 - A **MongoDB Atlas** account (free tier is sufficient)
@@ -146,19 +157,15 @@ cd Complaint-Management-System
 
 ```bash
 npm install
-# or
-yarn install
 ```
 
 ### 3. Configure Environment Variables
 
-Create a `.env.local` file in the root of the project:
+Create a `.env.local` file in the root:
 
 ```env
 MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/complaint-system
 ```
-
-Replace `<username>` and `<password>` with your MongoDB Atlas credentials.
 
 ### 4. Run the Development Server
 
@@ -174,105 +181,68 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 | Role | Access Level |
 |------|-------------|
-| `USER` | Submit complaints, view own tickets, add remarks |
+| `USER` | Submit complaints, view own tickets, add remarks, escalate |
 | `DEPARTMENT_HEAD` | View department complaints, update status |
-| `ADMIN` | Full access — all complaints, all users, all statistics |
-
-To promote a user to Admin, go to **Admin Panel → Users** and change their role, or manually update the `role` field in MongoDB Atlas.
+| `ADMIN` | Full access — all complaints, all users, reports, settings |
 
 ---
 
-## 📡 API Reference
+## 📅 Development Phases
 
-### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Create a new account |
-| POST | `/api/auth/login` | Login and set session cookie |
-| POST | `/api/auth/logout` | Clear the session cookie |
-| GET | `/api/auth/me` | Get current logged-in user |
-
-### Complaints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/complaints` | Submit a new complaint |
-| GET | `/api/complaints` | Get all complaints (Admin only) |
-| GET | `/api/complaints/user` | Get current user's complaints |
-| GET | `/api/complaints/:id` | Get single complaint details |
-| PUT | `/api/complaints/:id/status` | Update complaint status (Admin) |
-| POST | `/api/complaints/:id/remarks` | Add a remark/comment |
-
-### Users (Admin Only)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/users` | Get list of all users |
-| PUT | `/api/users/:id` | Update user role / status |
-
----
-
-## 📅 Development Timeline
-
-| Week | Focus | Key Deliverables |
-|------|-------|-----------------|
-| **Week 1** | Authentication & Setup | Login, Register, Session cookies, Protected dashboard layout, Home page |
-| **Week 2** | Complaints & Admin | All 8 complaint APIs, Admin dashboard, User management, Status update engine, Middleware |
+| Phase | Focus | Key Deliverables |
+|-------|-------|--------------------|
+| **Phase 1** | Authentication & Setup | Login, Register, Session cookies, Protected dashboard, Home page |
+| **Phase 2** | Core Features | Complaint CRUD APIs, Admin dashboard, User management, Status engine |
+| **Phase 3** | Advanced Features | Notifications, File Upload, History Timeline, Escalation, Charts, Bulk Ops, AdvancedSearch |
+| **Phase 4** | Final Polish | Reports, Settings, Profile, Department Mgmt, PDF/Excel Export, Deployment |
 
 ---
 
 ## 🔒 Security Features
 
-- **HTTP-Only Session Cookies** — tokens are invisible to client-side JavaScript
-- **bcryptjs Password Hashing** — passwords stored as non-reversible hashes
-- **Role-based API guards** — every endpoint validates user role before returning data
-- **Middleware Route Protection** — admin pages blocked at the routing layer
-- **Status forced to PENDING** — users cannot manipulate complaint state on creation
+- **HTTP-Only Session Cookies** — tokens invisible to client-side JavaScript
+- **bcryptjs Password Hashing** — non-reversible hashes
+- **Role-based API guards** — every endpoint validates user role
+- **Middleware Route Protection** — admin pages blocked at routing layer
+- **File Type Validation** — both client-side and server-side (JPG, PNG, PDF only, max 5MB)
 - **Ownership validation** — users can only view their own complaints
 
 ---
 
-## 📬 Complaint Status Flow
+## 📊 Complaint Status Flow
 
 ```
 [PENDING] → [IN_PROGRESS] → [RESOLVED]
                          ↘ [REJECTED]
-          → [ESCALATED]
+         → [ESCALATED]
 ```
 
-Every status change is logged with a timestamp and the acting admin's identity, building a full audit trail.
-
----
-
-## 🗃️ Database Schema Overview
-
-### User
-```
-name, email, password (hashed), role, department, isActive, createdAt
-```
-
-### Complaint
-```
-ticketId (auto-generated), title, description, category, priority,
-status, department, userId (ref), assignedTo (ref),
-remarks [ { userId, content, createdAt } ],
-resolvedAt, createdAt, updatedAt
-```
+Every status change triggers:
+1. A **notification** to the complaint owner
+2. A **history record** logged in the audit trail
 
 ---
 
 ## 📖 Team Documentation
 
-Detailed contribution reports are available in the repository:
-
-- [`JAYRAJ_README.md`](./JAYRAJ_README.md) — Frontend & Authentication (Week 1) by Jayraj Nawhale
-- [`SHUBHAM_README.md`](./SHUBHAM_README.md) — Backend APIs & Middleware (Week 2) by Shubham Mirarkar
+| README | Author | Coverage |
+|--------|--------|---------|
+| [`ATHARVA_README.md`](./ATHARVA_README.md) | Atharva Bhujbal | Phase 3 — Notifications, History, File Upload, Charts, Escalation, Bulk Ops |
+| [`RAJ_README.md`](./RAJ_README.md) | Raj Vairat | Phase 3 & 4 — Admin panel integration, UI polish, Testing, User manual |
+| [`JAYRAJ_README.md`](./JAYRAJ_README.md) | Jayraj Nawhale | Phase 1 & 4 — Frontend, Auth pages, Profile page |
+| [`SHUBHAM_README.md`](./SHUBHAM_README.md) | Shubham Mirarkar | Phase 2 & 4 — All APIs, Reports, Settings, Deployment |
+| [`PHASE3_README.md`](./PHASE3_README.md) | All | Phase 3 task plan |
+| [`docs/API_DOCS.md`](./docs/API_DOCS.md) | Atharva Bhujbal | Full API reference |
 
 ---
 
 ## 🚀 Deploy on Vercel
 
-The easiest way to deploy this Next.js app is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js. Make sure to add your `MONGODB_URI` as an Environment Variable in the Vercel project settings.
+```bash
+npm run build   # Verify production build
+```
 
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploy via [Vercel](https://vercel.com/new). Add `MONGODB_URI` as an environment variable in the Vercel project settings.
 
 ---
 

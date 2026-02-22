@@ -86,4 +86,14 @@ ComplaintSchema.pre('save', async function (next) {
   next();
 });
 
+// Performance indexes
+ComplaintSchema.index({ ticketId: 1 }, { unique: true });
+ComplaintSchema.index({ userId: 1 });
+ComplaintSchema.index({ status: 1 });
+ComplaintSchema.index({ createdAt: -1 });
+ComplaintSchema.index({ category: 1, status: 1 });
+ComplaintSchema.index({ department: 1 });
+ComplaintSchema.index({ isActive: 1, createdAt: -1 });
+
 export default mongoose.models.Complaint || mongoose.model('Complaint', ComplaintSchema);
+

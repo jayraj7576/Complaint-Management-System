@@ -65,11 +65,12 @@ The easiest way to deploy this Next.js app is to use the [Vercel Platform](https
 Hello! My name is Atharva Bhujbal, and I am the **Database & Admin Dashboard Developer** for our Complaint Management System project at JSPM's Jayawantrao Sawant Polytechnic.
 
 Our team's work division:
-- **Jayraj Nawhale** — Built the frontend Login, Register, and Home pages (Week 1)
-- **Shubham Mirarkar** — Built all the backend APIs for complaints management (Week 2)
-- **I (Atharva Bhujbal)** — Built Week 3 advanced features: Notifications, File Uploads, History Timeline, Charts, and Dashboard improvements
+- **Jayraj Nawhale** — Built the frontend Login, Register, and Home pages (Phase 1)
+- **Shubham Mirarkar** — Built all the backend APIs for complaints management (Phase 2)
+- **Raj Vairat** — Integrated advanced features into the Admin Panel (Phase 3)
+- **I (Atharva Bhujbal)** — Built Phase 3 advanced features: Notifications, File Uploads, History Timeline, Charts, and Dashboard improvements
 
-In **Week 3**, after Weeks 1 and 2 had already established the core system, my job was to add the **smart features** that make the system feel truly professional and complete:
+In **Phase 3**, after Phases 1 and 2 had already established the core system, my job was to add the **smart features** that make the system feel truly professional and complete:
 
 1. A **Notification System** that automatically tells users when their complaint's status changes
 2. A **File Upload System** so students can attach photos or PDF documents to their complaints
@@ -79,7 +80,7 @@ In **Week 3**, after Weeks 1 and 2 had already established the core system, my j
 6. A **Bulk Operations** tool for admins to update many complaints at once
 7. An **Advanced Search** panel with multi-filter capabilities
 
-This document explains everything I built in Week 3, step by step, in terms simple enough for anyone to understand!
+This document explains everything I built in Phase 3, step by step, in terms simple enough for anyone to understand!
 
 ---
 
@@ -97,7 +98,7 @@ You see a **red circle** on your mailbox door (the bell icon in the header) sayi
 
 You click a slip and it takes you directly to the complaint in question!
 
-**That entire post office system is what I built in Week 3.**
+**That entire post office system is what I built in Phase 3.**
 
 ---
 
@@ -116,9 +117,9 @@ You click a slip and it takes you directly to the complaint in question!
 
 ---
 
-## 📂 Chapter 0: Folder Structure — Files I Created in Week 3
+## 📂 Chapter 0: Folder Structure — Files I Created in Phase 3
 
-Here is every file I created in Week 3:
+Here is every file I created in Phase 3:
 
 ```
 src/
@@ -696,9 +697,9 @@ export function formatDateTime(date) { ... }
 
 ---
 
-## 🔒 Chapter 9: Security in Week 3
+## 🔒 Chapter 9: Security in Phase 3
 
-Every single Week 3 API follows the same security pattern as Weeks 1 & 2:
+Every single Phase 3 API follows the same security pattern as Phases 1 & 2:
 
 ### 1. Authentication First
 Every API starts with:
