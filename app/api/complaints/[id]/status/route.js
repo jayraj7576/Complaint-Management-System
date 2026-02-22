@@ -3,6 +3,8 @@ import connectDB from '../../../../../../lib/db';
 import Complaint from '../../../../../../models/Complaint';
 import User from '../../../../../../models/User';
 import { getSession } from '../../../../../../lib/auth';
+import { notifyStatusChange } from '../../../../../../lib/notifications';
+import { recordHistory } from '../../../../../../lib/history';
 
 export async function PUT(request, { params }) {
   try {
@@ -13,7 +15,7 @@ export async function PUT(request, { params }) {
 
     await connectDB();
     const user = await User.findById(userId);
-    
+
     // Allow ADMIN or DEPARTMENT_HEAD
     if (!user || !['ADMIN', 'DEPARTMENT_HEAD'].includes(user.role)) {
       return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
@@ -33,14 +35,12 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ success: false, error: 'Complaint not found' }, { status: 404 });
     }
 
+    const previousStatus = complaint.status;
     complaint.status = status;
-    
+
     // Add remark if provided
     if (remark) {
-      complaint.remarks.push({
-        userId,
-        content: remark,
-      });
+      complaint.remarks.push({ userId, content: remark });
     }
 
     // Set resolved timestamp
@@ -49,6 +49,12 @@ export async function PUT(request, { params }) {
     }
 
     await complaint.save();
+
+    // 🔔 Fire notification to complaint owner
+    await notifyStatusChange(id, previousStatus, status);
+
+    // 📜 Record in history timeline
+    await recordHistory(id, 'STATUS_CHANGED', previousStatus, status, userId);
 
     return NextResponse.json({
       success: true,

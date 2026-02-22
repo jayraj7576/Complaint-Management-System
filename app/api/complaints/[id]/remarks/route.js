@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import connectDB from '../../../../../../lib/db';
 import Complaint from '../../../../../../models/Complaint';
+import User from '../../../../../../models/User';
 import { getSession } from '../../../../../../lib/auth';
+import { notifyNewRemark } from '../../../../../../lib/notifications';
+import { recordHistory } from '../../../../../../lib/history';
 
 export async function POST(request, { params }) {
   try {
@@ -19,19 +22,27 @@ export async function POST(request, { params }) {
 
     await connectDB();
     const { id } = await params;
-    
-    const complaint = await Complaint.findById(id);
 
+    const complaint = await Complaint.findById(id);
     if (!complaint) {
       return NextResponse.json({ success: false, error: 'Complaint not found' }, { status: 404 });
     }
 
-    complaint.remarks.push({
-      userId,
-      content,
-    });
+    // Get name of the person adding the remark
+    const remarker = await User.findById(userId).select('name').lean();
+    const remarkerName = remarker?.name || 'Administrator';
 
+    complaint.remarks.push({ userId, content });
     await complaint.save();
+
+    // 🔔 Notify the complaint owner about the new remark
+    // Only notify if it's NOT the owner themselves commenting
+    if (complaint.userId.toString() !== userId) {
+      await notifyNewRemark(id, remarkerName);
+    }
+
+    // 📜 Record in history
+    await recordHistory(id, 'REMARK_ADDED', null, content.slice(0, 80), userId);
 
     return NextResponse.json({
       success: true,

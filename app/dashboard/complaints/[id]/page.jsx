@@ -1,43 +1,55 @@
 'use client';
 
-import React, { useEffect, useState, use } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, Clock, MessageSquare } from 'lucide-react';
+import { Loader2, ArrowLeft, Clock, MessageSquare, History } from 'lucide-react';
 import StatusBadge from '@/components/complaints/StatusBadge';
 import PriorityBadge from '@/components/complaints/PriorityBadge';
+import AttachmentGallery from '@/components/complaints/AttachmentGallery';
+import EscalateButton from '@/components/complaints/EscalateButton';
+import HistoryTimeline from '@/components/complaints/HistoryTimeline';
 import { format } from 'date-fns';
 
 export default function ComplaintDetailsPage({ params: _params }) {
   const router = useRouter();
-  const params = use(_params);
+  const params = _params;
   const id = params?.id;
-  
+
   const [complaint, setComplaint] = useState(null);
+  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchComplaint = async () => {
-      try {
-        const response = await fetch(`/api/complaints/${id}`);
-        const data = await response.json();
-        
-        if (data.success) {
-          setComplaint(data.complaint);
-        } else {
-          setError(data.error);
-        }
-      } catch (err) {
-        setError('Failed to load complaint details');
-      } finally {
-        setLoading(false);
+  const fetchComplaint = async () => {
+    try {
+      const response = await fetch(`/api/complaints/${id}`);
+      const data = await response.json();
+      if (data.success) {
+        setComplaint(data.complaint);
+      } else {
+        setError(data.error);
       }
-    };
+    } catch (err) {
+      setError('Failed to load complaint details');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const fetchHistory = async () => {
+    try {
+      const res = await fetch(`/api/complaints/${id}/history`);
+      const data = await res.json();
+      if (data.success) setHistory(data.history);
+    } catch (_) {}
+  };
+
+  useEffect(() => {
     if (id) {
       fetchComplaint();
+      fetchHistory();
     }
   }, [id]);
 
@@ -53,54 +65,69 @@ export default function ComplaintDetailsPage({ params: _params }) {
     return (
       <div className="text-center py-20">
         <h2 className="text-xl font-bold text-slate-800 mb-2">Complaint Not Found</h2>
-        <p className="text-slate-500 mb-6">{error || "The complaint you're looking for doesn't exist or you don't have permission to view it."}</p>
-        <Button onClick={() => router.push('/dashboard/complaints')}>
-          Return to My Complaints
-        </Button>
+        <p className="text-slate-500 mb-6">{error || "The complaint you're looking for doesn't exist."}</p>
+        <Button onClick={() => router.push('/dashboard/complaints')}>Return to My Complaints</Button>
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center gap-4 mb-6">
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-2">
         <Button variant="ghost" size="icon" onClick={() => router.push('/dashboard/complaints')}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <div>
-          <div className="flex items-center gap-3">
+        <div className="flex-1">
+          <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">{complaint.title}</h1>
             <StatusBadge status={complaint.status} />
           </div>
           <p className="text-sm text-slate-500 font-mono mt-1">Ticket ID: {complaint.ticketId}</p>
         </div>
+        {/* Escalate Button — only visible to the complaint owner */}
+        <EscalateButton
+          complaintId={complaint._id}
+          status={complaint.status}
+          onEscalated={fetchComplaint}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Left column */}
         <div className="md:col-span-2 space-y-6">
+          {/* Description */}
           <Card>
             <CardHeader>
               <CardTitle>Description</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="prose max-w-none">
-                <p className="text-slate-700 whitespace-pre-wrap">{complaint.description}</p>
-              </div>
+              <p className="text-slate-700 whitespace-pre-wrap">{complaint.description}</p>
             </CardContent>
           </Card>
 
+          {/* Attachments */}
+          {complaint.attachments?.length > 0 && (
+            <Card>
+              <CardContent className="pt-6">
+                <AttachmentGallery attachments={complaint.attachments} />
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Remarks */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageSquare className="h-5 w-5" />
-                Updates & Remarks
+                Updates &amp; Remarks
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {complaint.remarks && complaint.remarks.length > 0 ? (
+              {complaint.remarks?.length > 0 ? (
                 <div className="space-y-4">
                   {complaint.remarks.map((remark, idx) => (
-                    <div key={idx} className="bg-slate-50 rounded-lg p-4 border relative">
+                    <div key={idx} className="bg-slate-50 rounded-lg p-4 border">
                       <div className="flex justify-between items-start mb-2">
                         <span className="font-medium text-sm text-slate-900">
                           {remark.userId?.name || 'Administrator'}
@@ -120,8 +147,22 @@ export default function ComplaintDetailsPage({ params: _params }) {
               )}
             </CardContent>
           </Card>
+
+          {/* History Timeline */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <History className="h-5 w-5" />
+                Activity History
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <HistoryTimeline history={history} />
+            </CardContent>
+          </Card>
         </div>
 
+        {/* Right column — Details */}
         <div className="space-y-6">
           <Card>
             <CardHeader>
@@ -130,7 +171,7 @@ export default function ComplaintDetailsPage({ params: _params }) {
             <CardContent className="space-y-4">
               <div>
                 <dt className="text-sm font-medium text-slate-500">Category</dt>
-                <dd className="mt-1 text-sm font-semibold capitalize">{complaint.category.replace('_', ' ')}</dd>
+                <dd className="mt-1 text-sm font-semibold capitalize">{complaint.category?.replace('_', ' ')}</dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-slate-500">Priority</dt>

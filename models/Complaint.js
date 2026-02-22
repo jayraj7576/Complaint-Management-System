@@ -59,6 +59,18 @@ const ComplaintSchema = new mongoose.Schema(
     resolvedAt: {
       type: Date,
     },
+    attachments: [
+      {
+        filePath: { type: String, required: true },
+        fileName: { type: String },
+        fileType: { type: String },
+        fileSize: { type: Number },
+      },
+    ],
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

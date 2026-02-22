@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '../../../../lib/db';
 import Complaint from '../../../../models/Complaint';
 import { getSession } from '../../../../lib/auth';
+import { recordHistory } from '../../../../lib/history';
 
 // POST /api/complaints - Create a new complaint
 export async function POST(request) {
@@ -12,7 +13,7 @@ export async function POST(request) {
     }
 
     const data = await request.json();
-    const { title, description, category, priority, department } = data;
+    const { title, description, category, priority, department, attachments } = data;
 
     if (!title || !description || !category) {
       return NextResponse.json(
@@ -31,7 +32,11 @@ export async function POST(request) {
       department,
       userId,
       status: 'PENDING',
+      attachments: attachments || [],
     });
+
+    // Record creation in history so timeline shows "Complaint submitted"
+    await recordHistory(complaint._id, 'CREATED', null, null, userId);
 
     return NextResponse.json(
       {
