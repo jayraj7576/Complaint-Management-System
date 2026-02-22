@@ -1025,20 +1025,107 @@ By building all these APIs, I truly became a Backend Developer. I understand how
 
 ---
 
-## 🗓️ Phase 3 — My Remaining Tasks
+## ✅ Phase 3 — My Implemented Features
 
-| # | Task | File |
-|---|------|------|
-| 1 | Add text search + date range filter + pagination to `GET /api/complaints` | `app/api/complaints/route.js` |
-| 2 | Add pagination to `GET /api/complaints/user` | `app/api/complaints/user/route.js` |
+Here is exactly what I built for Phase 3:
 
-Enhancements for `GET /api/complaints`:
+---
 
-- Read `search`, `dateFrom`, `dateTo`, `page`, `limit` from query params
-- Build `filter.$or` for text search against title, description, ticketId
-- Build `filter.createdAt` range for date filtering
-- Use `.skip((page-1)*limit).limit(limit).lean()` for efficient pagination
-- Return `total` count alongside complaints array for the UI paginator
+### Chapter 3: Enhancing `GET /api/complaints` with Search, Date Filter & Pagination
+
+**File modified:** `app/api/complaints/route.js`
+
+Before Phase 3, the admin complaints API only supported status, category, and priority filters. It returned ALL complaints with no pagination — very slow with large data.
+
+I enhanced it with:
+- 🔍 **Text search** — searches across `title`, `description`, and `ticketId` fields using MongoDB `$regex`
+- 📅 **Date range** — `dateFrom` and `dateTo` query params filter by `createdAt`
+- 📄 **Pagination** — `page` and `limit` params with `.skip()` and `.limit()`, returns `pagination` meta in response
+- ⚡ **Performance** — added `.lean()` to skip Mongoose object creation and `Promise.all()` for parallel stats queries
+- Added `escalated` count to the stats response
+
+Key code I added:
+
+```javascript
+// Read new params
+const search   = searchParams.get('search');
+const dateFrom = searchParams.get('dateFrom');
+const dateTo   = searchParams.get('dateTo');
+const page     = Math.max(1, parseInt(searchParams.get('page')  || '1'));
+const limit    = Math.min(500, parseInt(searchParams.get('limit') || '50'));
+const skip     = (page - 1) * limit;
+
+// Text search using MongoDB $regex (case-insensitive)
+if (search) {
+  filter.$or = [
+    { title:       { $regex: search, $options: 'i' } },
+    { description: { $regex: search, $options: 'i' } },
+    { ticketId:    { $regex: search, $options: 'i' } },
+  ];
+}
+
+// Date range filter
+if (dateFrom || dateTo) {
+  filter.createdAt = {};
+  if (dateFrom) filter.createdAt.$gte = new Date(dateFrom);
+  if (dateTo) {
+    const end = new Date(dateTo);
+    end.setHours(23, 59, 59, 999); // Include the full end day
+    filter.createdAt.$lte = end;
+  }
+}
+
+// Paginated query with .lean() for performance
+const [complaints, totalFiltered] = await Promise.all([
+  Complaint.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit)
+    .populate('userId', 'name email').lean(),
+  Complaint.countDocuments(filter),
+]);
+
+// Response includes pagination metadata
+return NextResponse.json({
+  success: true,
+  complaints,
+  pagination: { total: totalFiltered, page, limit, pages: Math.ceil(totalFiltered / limit) },
+});
+```
+
+**What is `$regex`?** It’s MongoDB’s pattern matching operator — like SQL’s `LIKE`. The `$options: 'i'` flag makes it case-insensitive so searching for “library” also finds “Library” and “LIBRARY”.
+
+**What does `.lean()` do?** By default, Mongoose returns “full” document objects with many extra methods. `.lean()` tells Mongoose to return plain JavaScript objects instead — much faster for read-only use cases!
+
+---
+
+### Chapter 4: Adding Pagination to `GET /api/complaints/user`
+
+**File modified:** `app/api/complaints/user/route.js`
+
+Similar enhancement for the student-facing endpoint:
+
+```javascript
+// Now supports: ?status=PENDING&search=library&page=1&limit=20
+const filter = { userId };
+if (status && status !== 'ALL') filter.status = status;
+if (search) {
+  filter.$or = [
+    { title: { $regex: search, $options: 'i' } },
+    { ticketId: { $regex: search, $options: 'i' } },
+  ];
+}
+const [complaints, total] = await Promise.all([
+  Complaint.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+  Complaint.countDocuments(filter),
+]);
+```
+
+---
+
+### My Phase 3 Deliverables Summary
+
+| Feature | File | Status |
+|---------|----|-------|
+| Text search + date range in GET /api/complaints | `app/api/complaints/route.js` | ✅ Done |
+| Pagination in GET /api/complaints/user | `app/api/complaints/user/route.js` | ✅ Done |
 
 ---
 

@@ -1,62 +1,60 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import ComplaintTable from '@/components/complaints/ComplaintTable';
+import AdvancedSearch from '@/components/complaints/AdvancedSearch';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 export default function MyComplaintsPage() {
   const { user } = useAuth();
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('ALL');
+
+  const fetchComplaints = useCallback(async (params = {}) => {
+    setLoading(true);
+    try {
+      const query = new URLSearchParams();
+
+      if (params.search)               query.set('search', params.search);
+      if (params.status?.length === 1) query.set('status', params.status[0]);
+      if (params.dateFrom)             query.set('dateFrom', params.dateFrom);
+      if (params.dateTo)               query.set('dateTo', params.dateTo);
+
+      const response = await fetch(`/api/complaints/user?${query.toString()}`);
+      const data = await response.json();
+      if (data.success) {
+        let results = data.complaints;
+
+        // Client-side sort  (API already returns newest-first by default)
+        if (params.sort === 'priority') {
+          const ORDER = { URGENT: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
+          results = [...results].sort((a, b) =>
+            params.order === 'desc'
+              ? (ORDER[b.priority] || 0) - (ORDER[a.priority] || 0)
+              : (ORDER[a.priority] || 0) - (ORDER[b.priority] || 0)
+          );
+        }
+
+        // Client-side category filter (API /user doesn't expose category yet)
+        if (params.category?.length) {
+          results = results.filter((c) => params.category.includes(c.category));
+        }
+
+        setComplaints(results);
+      }
+    } catch (error) {
+      console.error('Failed to fetch complaints:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchComplaints = async () => {
-      try {
-        const response = await fetch('/api/complaints/user');
-        const data = await response.json();
-        if (data.success) {
-          setComplaints(data.complaints);
-        }
-      } catch (error) {
-        console.error('Failed to fetch complaints:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user) {
-      fetchComplaints();
-    }
-  }, [user]);
-
-  const filteredComplaints = complaints.filter((c) => {
-    const matchesSearch =
-      c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.ticketId.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'ALL' || c.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
-      </div>
-    );
-  }
+    if (user) fetchComplaints();
+  }, [user, fetchComplaints]);
 
   return (
     <div className="space-y-6">
@@ -75,31 +73,21 @@ export default function MyComplaintsPage() {
         </Button>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="w-full sm:max-w-xs">
-          <Input
-            placeholder="Search by title or ticket ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="w-full sm:w-[200px]">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger>
-              <SelectValue placeholder="Filter by Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">All Statuses</SelectItem>
-              <SelectItem value="PENDING">Pending</SelectItem>
-              <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-              <SelectItem value="RESOLVED">Resolved</SelectItem>
-              <SelectItem value="REJECTED">Rejected</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      {/* Advanced Search — built by Atharva, integrated by Jayraj */}
+      <AdvancedSearch onSearchChange={fetchComplaints} />
 
-      <ComplaintTable complaints={filteredComplaints} showUser={false} />
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+        </div>
+      ) : complaints.length === 0 ? (
+        <div className="text-center py-16 text-slate-400">
+          <p className="text-lg font-medium">No complaints found</p>
+          <p className="text-sm mt-1">Try adjusting your search filters or submit a new complaint.</p>
+        </div>
+      ) : (
+        <ComplaintTable complaints={complaints} showUser={false} />
+      )}
     </div>
   );
 }

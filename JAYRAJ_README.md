@@ -788,30 +788,111 @@ I am incredibly proud of Week 1. The foundation I laid allowed my teammates in W
 
 ---
 
-## 👥 Team Division Reference
+## 👥 Team Division Reference — All Phases
 
-| Team Member | Phase 1 Tasks |
-|-------------|---------------|
-| **Jayraj Nawhale** | Login page, Register page, Home page, Session Cookies, Route Guards, Header Nav |
-| **Shubham Mirarkar** | Auth API routes, Password hashing with bcrypt |
-| **Atharva Bhujbal** | MongoDB connection, User model, Tailwind config |
-| **Raj Vairat** | StatusBadge, PriorityBadge, color styling |
+| Team Member | Phase 1 | Phase 2 | Phase 3 | Phase 4 |
+|-------------|---------|---------|---------|--------|
+| **Jayraj Nawhale** | Login, Register, Home, Auth Guards | User Dashboard UI | AdvancedSearch + Notifications nav | Profile page, Settings UI |
+| **Shubham Mirarkar** | Auth APIs | All complaint APIs | Search + Pagination APIs | Reports APIs, Deployment |
+| **Atharva Bhujbal** | DB connection, User model | Admin Dashboard | Notifications, Charts, History, FileUpload, Escalation | Reports page, DB indexes |
+| **Raj Vairat** | StatusBadge, PriorityBadge | Testing | Admin panel integration | UI polish, Testing, Manual |
 
 ---
 
-## 🗓️ Phase 3 — My Remaining Tasks
+## ✅ Phase 3 — My Implemented Features
 
-In Phase 3, I integrate Atharva's advanced components into the user-side dashboard.
+In Phase 3, I integrated Atharva’s advanced components into the **user-side dashboard**. Here is exactly what I implemented:
 
-| # | Task | File |
-|---|------|------|
-| 1 | Add `AdvancedSearch` to user complaints listing | `app/dashboard/complaints/page.jsx` |
-| 2 | Add Notifications link to sidebar nav items | `app/dashboard/layout.jsx` |
+---
 
-For the sidebar nav link, add to the nav items array in `layout.jsx`:
+### Chapter 6: Adding `<AdvancedSearch />` to My Complaints Page
+
+**File modified:** `app/dashboard/complaints/page.jsx`
+
+Before Phase 3, the My Complaints page had a basic `<Input>` box and a single `<Select>` for status. Students could only filter by status and do a simple text match on the title.
+
+In Phase 3, I replaced that with Atharva’s powerful `<AdvancedSearch />` component. Now students get:
+- 🔍 **Full-text search** across title, description, and ticket ID with debouncing
+- ✅ **Status checkboxes** for PENDING, IN_PROGRESS, RESOLVED, REJECTED, ESCALATED
+- 🏷️ **Category checkboxes** for all 7 categories
+- 🔴 **Priority checkboxes** for LOW, MEDIUM, HIGH, URGENT
+- 📅 **Date range picker** (From / To)
+- **Sort options** — Newest First, Oldest First, Priority High→Low
+- **Active filter chips** showing what’s currently filtered
+- **Clear All** button to reset everything
+
+**How I integrated it:**
+
+```jsx
+// app/dashboard/complaints/page.jsx
+'use client';
+import AdvancedSearch from '@/components/complaints/AdvancedSearch';
+import ComplaintTable from '@/components/complaints/ComplaintTable';
+
+export default function MyComplaintsPage() {
+  const [complaints, setComplaints] = useState([]);
+
+  const fetchComplaints = useCallback(async (params = {}) => {
+    const query = new URLSearchParams();
+    if (params.search)               query.set('search', params.search);
+    if (params.status?.length === 1) query.set('status', params.status[0]);
+    if (params.dateFrom)             query.set('dateFrom', params.dateFrom);
+    if (params.dateTo)               query.set('dateTo', params.dateTo);
+
+    const response = await fetch(`/api/complaints/user?${query.toString()}`);
+    const data = await response.json();
+    if (data.success) setComplaints(data.complaints);
+  }, []);
+
+  useEffect(() => { if (user) fetchComplaints(); }, [user]);
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">My Complaints</h1>
+      {/* Atharva's AdvancedSearch component, integrated by Jayraj */}
+      <AdvancedSearch onSearchChange={fetchComplaints} />
+      <ComplaintTable complaints={complaints} showUser={false} />
+    </div>
+  );
+}
 ```
-{ href: '/dashboard/notifications', label: 'Notifications', icon: Bell }
+
+**Key learning:** `AdvancedSearch` calls `onSearchChange(params)` every time any filter changes (with a 300ms debounce). I convert those params into URL query params and call the API — clean separation of concerns between search UI and data fetching!
+
+---
+
+### Chapter 7: Adding Notifications Link to the Sidebar
+
+**File modified:** `app/dashboard/layout.jsx`
+
+Before Phase 3, the sidebar had: Dashboard, New Complaint, My Complaints, Profile.
+
+Atharva built the full Notifications system (bell icon, unread count, notification list page). I needed to add the nav link so users can actually reach `/dashboard/notifications`.
+
+```jsx
+// app/dashboard/layout.jsx
+import { LayoutDashboard, FileText, PlusCircle, User, Bell } from 'lucide-react';
+
+// Added Bell icon and Notifications route:
+const sidebarItems = [
+  { label: 'Dashboard',     href: '/dashboard',                 icon: LayoutDashboard },
+  { label: 'New Complaint', href: '/dashboard/complaints/new',  icon: PlusCircle },
+  { label: 'My Complaints', href: '/dashboard/complaints',      icon: FileText },
+  { label: 'Notifications', href: '/dashboard/notifications',   icon: Bell },  // ← Added by Jayraj
+  { label: 'Profile',       href: '/dashboard/profile',         icon: User },
+];
 ```
+
+**Why Bell icon?** Lucide React’s `Bell` icon visually communicates notifications to users instantly without text. It matches the `NotificationBell` component Atharva built in the `<Sidebar>` header.
+
+---
+
+### My Phase 3 Deliverables Summary
+
+| Feature | File | Status |
+|---------|----|-------|
+| `<AdvancedSearch />` on My Complaints page | `app/dashboard/complaints/page.jsx` | ✅ Done |
+| Notifications nav link in sidebar | `app/dashboard/layout.jsx` | ✅ Done |
 
 ---
 

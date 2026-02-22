@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Sidebar from '@/components/layout/Sidebar';
-import { LayoutDashboard, FileText, PlusCircle, User } from 'lucide-react';
+import { LayoutDashboard, FileText, PlusCircle, User, Bell } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -32,6 +32,7 @@ export default function DashboardLayout({ children }) {
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'New Complaint', href: '/dashboard/complaints/new', icon: PlusCircle },
     { label: 'My Complaints', href: '/dashboard/complaints', icon: FileText },
+    { label: 'Notifications', href: '/dashboard/notifications', icon: Bell },
     { label: 'Profile', href: '/dashboard/profile', icon: User },
   ];
 
