@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import connectDB from '../../../../../lib/db';
-import User from '../../../../../models/User';
-import { getSession } from '../../../../../lib/auth';
+import connectDB from '@/lib/db';
+import User from '@/models/User';
+import { getSession } from '@/lib/auth';
 
 export async function PUT(request, { params }) {
   try {

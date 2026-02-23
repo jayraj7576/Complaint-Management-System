@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import connectDB from '../../../../lib/db';
-import User from '../../../../models/User';
-import Complaint from '../../../../models/Complaint';
-import { getSession } from '../../../../lib/auth';
+import connectDB from '@/lib/db';
+import User from '@/models/User';
+import Complaint from '@/models/Complaint';
+import { getSession } from '@/lib/auth';
 
 // GET /api/users - Get all users (Admin only)
 export async function GET(request) {

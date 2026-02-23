@@ -1,4 +1,4 @@
-import { getSession } from '../../../../lib/auth.js';
+import { getSession } from '@/lib/auth.js';
 import { NextResponse } from 'next/server';
 
 export async function GET() {

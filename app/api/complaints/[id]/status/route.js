@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import connectDB from '../../../../../../lib/db';
-import Complaint from '../../../../../../models/Complaint';
-import User from '../../../../../../models/User';
-import { getSession } from '../../../../../../lib/auth';
-import { notifyStatusChange } from '../../../../../../lib/notifications';
-import { recordHistory } from '../../../../../../lib/history';
+import connectDB from '@/lib/db';
+import Complaint from '@/models/Complaint';
+import User from '@/models/User';
+import { getSession } from '@/lib/auth';
+import { notifyStatusChange } from '@/lib/notifications';
+import { recordHistory } from '@/lib/history';
 
 export async function PUT(request, { params }) {
   try {

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { findUserByEmail, validatePassword, getUserWithoutPassword } from '../../../../lib/mock-db.js';
-import { createSession } from '../../../../lib/auth.js';
+import { findUserByEmail, validatePassword, getUserWithoutPassword } from '@/lib/mock-db.js';
+import { createSession } from '@/lib/auth.js';
 
 export async function POST(req) {
   try {

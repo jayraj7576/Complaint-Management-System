@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import connectDB from '../../../../../lib/db';
-import Complaint from '../../../../../models/Complaint';
-import User from '../../../../../models/User';
-import { getSession } from '../../../../../lib/auth';
+import connectDB from '@/lib/db';
+import Complaint from '@/models/Complaint';
+import User from '@/models/User';
+import { getSession } from '@/lib/auth';
 
 export async function GET(request, { params }) {
   try {

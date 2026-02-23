@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import connectDB from '../../../../../lib/db';
-import Complaint from '../../../../../models/Complaint';
-import { getSession } from '../../../../../lib/auth';
+import connectDB from '@/lib/db';
+import Complaint from '@/models/Complaint';
+import { getSession } from '@/lib/auth';
 
 // GET /api/complaints/user — Get complaints for the logged-in user
 // Supports: ?status=PENDING&search=library&page=1&limit=10

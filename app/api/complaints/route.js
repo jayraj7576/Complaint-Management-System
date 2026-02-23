@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import connectDB from '../../../../lib/db';
-import Complaint from '../../../../models/Complaint';
-import { getSession } from '../../../../lib/auth';
-import { recordHistory } from '../../../../lib/history';
+import connectDB from '@/lib/db';
+import Complaint from '@/models/Complaint';
+import { getSession } from '@/lib/auth';
+import { recordHistory } from '@/lib/history';
 
 // POST /api/complaints - Create a new complaint
 export async function POST(request) {
@@ -66,7 +66,7 @@ export async function GET(request) {
     await connectDB();
 
     // Check if user is admin
-    const User = (await import('../../../../models/User')).default;
+    const User = (await import('@/models/User')).default;
     const user = await User.findById(userId);
 
     if (!user || user.role !== 'ADMIN') {
