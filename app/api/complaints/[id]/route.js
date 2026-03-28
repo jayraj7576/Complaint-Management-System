@@ -26,9 +26,11 @@ export async function GET(request, { params }) {
 
     const user = await User.findById(userId);
     const isAdmin = user?.role === 'ADMIN';
+    const isDeptHead = user?.role === 'DEPARTMENT_HEAD' && complaint.department === user.department;
+    const isOwner = complaint.userId._id.toString() === userId;
 
-    // Must be admin, or the owner of the complaint
-    if (!isAdmin && complaint.userId._id.toString() !== userId) {
+    // Must be admin, owner, or head of the relevant department
+    if (!isAdmin && !isOwner && !isDeptHead) {
        return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
     }
 

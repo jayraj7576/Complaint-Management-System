@@ -26,8 +26,9 @@ export async function GET() {
   try {
     const settings = await Setting.find({});
     return NextResponse.json({ success: true, settings });
-  } catch (error) {
-    return NextResponse.json({ success: false, error: 'Failed to fetch settings' }, { status: 500 });
+  } catch (err) {
+    console.error('SERVER_ERROR: GET /api/admin/settings:', err);
+    return NextResponse.json({ success: false, error: 'Failed to fetch settings: ' + err.message }, { status: 500 });
   }
 }
 

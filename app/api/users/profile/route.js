@@ -11,16 +11,22 @@ export async function PUT(request) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { name, phone, department } = await request.json();
+    const { name, phone, department, notificationPreferences } = await request.json();
 
     if (!name) {
       return NextResponse.json({ success: false, error: 'Name is required' }, { status: 400 });
     }
 
     await connectDB();
+
+    const updateData = { name, phone, department };
+    if (notificationPreferences) {
+      updateData.notificationPreferences = notificationPreferences;
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name, phone, department },
+      updateData,
       { new: true, runValidators: true }
     ).select('-password');
 

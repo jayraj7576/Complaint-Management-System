@@ -100,12 +100,15 @@ export default function NotificationBell() {
         <div className="absolute right-0 top-10 z-50 w-[350px] max-h-[400px] overflow-y-auto bg-white border border-slate-200 rounded-xl shadow-xl">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b sticky top-0 bg-white z-10">
-            <h3 className="font-semibold text-slate-800">Notifications</h3>
+            <div className="flex items-center gap-2">
+               <Bell className="h-4 w-4 text-blue-600" />
+               <h3 className="font-bold text-slate-900">Notifications</h3>
+            </div>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
                 disabled={loading}
-                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium"
+                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-bold"
               >
                 <CheckCheck className="h-3 w-3" />
                 Mark all read
@@ -126,7 +129,7 @@ export default function NotificationBell() {
                 onClick={() => handleNotificationClick(notification)}
                 className="w-full text-left flex items-start gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-100 transition-colors"
               >
-                <span className="text-lg mt-0.5 flex-shrink-0">
+                <span className="text-lg mt-0.5 shrink-0">
                   {typeIcons[notification.type] || '🔔'}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -135,7 +138,7 @@ export default function NotificationBell() {
                       {notification.title}
                     </p>
                     {!notification.isRead && (
-                      <Circle className="h-2 w-2 text-blue-500 fill-blue-500 flex-shrink-0" />
+                      <Circle className="h-2 w-2 text-blue-500 fill-blue-500 shrink-0" />
                     )}
                   </div>
                   <p className="text-xs text-slate-500 line-clamp-2 mt-0.5">

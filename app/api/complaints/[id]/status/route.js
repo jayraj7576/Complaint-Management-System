@@ -35,6 +35,11 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ success: false, error: 'Complaint not found' }, { status: 404 });
     }
 
+    // Role-based security check (Hardening)
+    if (user.role === 'DEPARTMENT_HEAD' && complaint.department !== user.department) {
+       return NextResponse.json({ success: false, error: 'Forbidden: You can only update complaints within your department' }, { status: 403 });
+    }
+
     const previousStatus = complaint.status;
     complaint.status = status;
 

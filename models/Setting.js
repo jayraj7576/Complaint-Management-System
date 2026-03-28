@@ -23,6 +23,6 @@ const SettingSchema = new mongoose.Schema(
 );
 
 // Performance indexes
-SettingSchema.index({ key: 1 });
+// Explicit index removed, using schema-level unique: true
 
 export default mongoose.models.Setting || mongoose.model('Setting', SettingSchema);

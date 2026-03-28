@@ -22,15 +22,24 @@ export async function POST(request, { params }) {
 
     await connectDB();
     const { id } = await params;
-
     const complaint = await Complaint.findById(id);
     if (!complaint) {
       return NextResponse.json({ success: false, error: 'Complaint not found' }, { status: 404 });
     }
 
+    // Role-based security check (Hardening)
+    const user = await User.findById(userId).select('name role department').lean();
+    
+    const isOwner = complaint.userId.toString() === userId;
+    const isDeptHead = user?.role === 'DEPARTMENT_HEAD' && complaint.department === user?.department;
+    const isAdmin = user?.role === 'ADMIN';
+
+    if (!isOwner && !isDeptHead && !isAdmin) {
+       return NextResponse.json({ success: false, error: 'Forbidden: You do not have permission to comment on this complaint' }, { status: 403 });
+    }
+
     // Get name of the person adding the remark
-    const remarker = await User.findById(userId).select('name').lean();
-    const remarkerName = remarker?.name || 'Administrator';
+    const remarkerName = user?.name || 'Staff Member';
 
     complaint.remarks.push({ userId, content });
     await complaint.save();

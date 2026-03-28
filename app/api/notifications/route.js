@@ -5,8 +5,9 @@ import { getSession } from '@/lib/auth';
 
 // GET /api/notifications — fetch current user's notifications
 export async function GET(req) {
+  let userId;
   try {
-    const userId = await getSession();
+    userId = await getSession();
     if (!userId) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
@@ -40,7 +41,12 @@ export async function GET(req) {
       },
     });
   } catch (err) {
-    console.error('GET /api/notifications error:', err);
-    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });
+    console.error('SERVER_ERROR: GET /api/notifications:', {
+      message: err.message,
+      stack: err.stack,
+      userId: userId || 'none',
+      url: req.url
+    });
+    return NextResponse.json({ success: false, error: 'Server error: ' + err.message }, { status: 500 });
   }
 }

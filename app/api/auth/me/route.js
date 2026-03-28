@@ -1,5 +1,7 @@
 import { getSession } from '@/lib/auth.js';
 import { NextResponse } from 'next/server';
+import connectDB from '@/lib/db.js';
+import User from '@/models/User.js';
 
 export async function GET() {
   try {
@@ -9,20 +11,18 @@ export async function GET() {
       return NextResponse.json({ user: null });
     }
 
-    // For static auth, we'll return the user from session storage
-    // In a real app, you'd fetch from database
-    // For now, return a basic response indicating session exists
-    return NextResponse.json({ 
-      user: { 
-        _id: userId,
-        // Session exists but we don't have full user data in static mode
-        // The frontend AuthContext will handle this
-      } 
-    });
+    await connectDB();
+    const user = await User.findById(userId).select('-password');
+
+    if (!user) {
+      return NextResponse.json({ user: null });
+    }
+
+    return NextResponse.json({ user });
   } catch (error) {
-    console.error('Fetch current user error:', error);
+    console.error('[Auth API] Fetch current user error:', error.message);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Internal Server Error', message: error.message },
       { status: 500 }
     );
   }

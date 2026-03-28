@@ -203,10 +203,9 @@ export default function AdminReportsPage() {
         </Card>
       </div>
 
-      {/* Category performance table */}
       <Card className="rounded-3xl border-slate-100 shadow-sm overflow-hidden">
-        <CardHeader className="bg-slate-900 border-none">
-          <CardTitle className="text-white text-lg font-bold">Institutional Performance matrix</CardTitle>
+        <CardHeader className="bg-slate-50 border-b border-slate-100">
+          <CardTitle className="text-slate-900 text-lg font-bold">Institutional Performance Matrix</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -221,14 +220,13 @@ export default function AdminReportsPage() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {(stats?.category || []).map((row, i) => {
-                  const resolvedCount = stats?.trend.reduce((acc, t) => acc + (t.resolved || 0), 0); // Simplified for UI
-                  const rate = row.count ? Math.round((resolved / total) * 100) : 0; // Mocked rate for visuals
+                  const rate = row.count ? Math.round((row.resolved / row.count) * 100) : 0;
                   
                   return (
                     <tr key={i} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 font-bold text-slate-900 capitalize italic">{row.name.toLowerCase()}</td>
+                      <td className="px-6 py-4 font-bold text-slate-900 capitalize italic">{row.name.toLowerCase().replace('_', ' ')}</td>
                       <td className="px-6 py-4 text-right font-medium text-slate-600">{row.count}</td>
-                      <td className="px-6 py-4 text-right font-medium text-green-600">--</td>
+                      <td className="px-6 py-4 text-right font-medium text-green-600">{row.resolved || 0}</td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                            <div className="w-16 bg-slate-100 h-1.5 rounded-full overflow-hidden">

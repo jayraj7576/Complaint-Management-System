@@ -42,7 +42,7 @@ export default function AdminDashboardPage() {
       }
     };
 
-    if (user?.role === 'ADMIN') {
+    if (user?.role === 'ADMIN' || user?.role === 'DEPARTMENT_HEAD') {
       fetchDashboardData();
     }
   }, [user]);
@@ -57,7 +57,7 @@ export default function AdminDashboardPage() {
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-300 border-t-slate-800 mx-auto" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600 mx-auto" />
       </div>
     );
   }
@@ -65,8 +65,12 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Admin Overview</h1>
-        <p className="text-sm text-slate-500 mt-1">System-wide metrics and recent activity.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          {user?.role === 'ADMIN' ? 'Admin Overview' : 'Department Overview'}
+        </h1>
+        <p className="text-sm text-slate-500 mt-1">
+          {user?.role === 'ADMIN' ? 'System-wide metrics and recent activity.' : `Monitoring activity for ${user?.department} department.`}
+        </p>
       </div>
 
       {/* Stats Cards */}

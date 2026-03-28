@@ -29,11 +29,11 @@ export default function DashboardLayout({ children }) {
   }
 
   const sidebarItems = [
-    { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { label: 'New Complaint', href: '/dashboard/complaints/new', icon: PlusCircle },
-    { label: 'My Complaints', href: '/dashboard/complaints', icon: FileText },
-    { label: 'Notifications', href: '/dashboard/notifications', icon: Bell },
-    { label: 'Profile', href: '/dashboard/profile', icon: User },
+    { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+    { label: 'New Complaint', href: '/complaints/new', icon: PlusCircle },
+    { label: 'My Complaints', href: '/complaints', icon: FileText },
+    { label: 'Notifications', href: '/notifications', icon: Bell },
+    { label: 'Profile Settings', href: '/profile', icon: User },
   ];
 
   return (

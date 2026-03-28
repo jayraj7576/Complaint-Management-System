@@ -32,35 +32,52 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (email, password) => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
-    if (res.ok) {
-      setUser(data.user);
-      router.push('/dashboard');
-      return { success: true };
-    } else {
-      return { success: false, error: data.error };
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.user);
+        
+        // Role-based redirection
+        if (data.user.role === 'ADMIN' || data.user.role === 'DEPARTMENT_HEAD') {
+          router.push('/admin');
+        } else {
+          router.push('/dashboard');
+        }
+        
+        return { success: true };
+      } else {
+        return { success: false, error: data.error };
+      }
+    } catch (error) {
+      return { success: false, error: 'Network error occurred' };
     }
   };
 
-  const register = async (name, email, password, phone) => {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, phone }),
-    });
+  const register = async (name, email, password, phone, role = 'USER', department = '') => {
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, phone, role, department }),
+      });
 
-    const data = await res.json();
-    if (res.ok) {
-      router.push('/');
-      return { success: true };
-    } else {
-      return { success: false, error: data.error };
+      const data = await res.json();
+      if (res.ok) {
+        // Redirection to login with a message might be better, 
+        // but for now redirecting to home or login is fine.
+        router.push('/login');
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, error: data.error };
+      }
+    } catch (error) {
+       return { success: false, error: 'Network error during registration' };
     }
   };
 

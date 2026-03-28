@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { findUserByEmail, validatePassword, getUserWithoutPassword } from '@/lib/mock-db.js';
+import connectDB from '@/lib/db.js';
+import User from '@/models/User.js';
+import { comparePassword } from '@/lib/hash.js';
 import { createSession } from '@/lib/auth.js';
 
 export async function POST(req) {
@@ -13,8 +15,10 @@ export async function POST(req) {
       );
     }
 
-    // Find user in mock database
-    const user = findUserByEmail(email);
+    await connectDB();
+
+    // Find user in real database
+    const user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user) {
       return NextResponse.json(
@@ -23,8 +27,8 @@ export async function POST(req) {
       );
     }
 
-    // Validate password (simple comparison for mock)
-    const isMatch = validatePassword(user, password);
+    // Validate hashed password
+    const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
@@ -32,16 +36,34 @@ export async function POST(req) {
       );
     }
 
-    // Create session
-    await createSession(user._id);
+    // Check account status (User Approval Workflow)
+    if (user.role !== 'ADMIN' && user.status && user.status !== 'APPROVED') {
+       return NextResponse.json(
+         { 
+           error: user.status === 'PENDING' 
+             ? 'Your account is pending approval by your Department Head.' 
+             : `Your account access has been ${user.status.toLowerCase()}.` 
+         },
+         { status: 403 }
+       );
+    }
 
-    // Return user without password
-    const userWithoutPassword = getUserWithoutPassword(user);
+    // Create session with real ObjectId
+    await createSession(user._id.toString());
+
+    // Prepare user object for frontend (sanitize)
+    const userResponse = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      department: user.department,
+    };
 
     return NextResponse.json(
       {
         message: 'Login successful',
-        user: userWithoutPassword,
+        user: userResponse,
       },
       { status: 200 }
     );

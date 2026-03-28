@@ -9,6 +9,13 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
@@ -323,7 +330,7 @@ export default function AdminSettingsPage() {
 
         {/* Info Column */}
         <div className="space-y-6">
-          <Card className="bg-gradient-to-br from-blue-600 to-blue-800 text-white border-none shadow-xl">
+          <Card className="bg-linear-to-br from-blue-600 to-blue-800 text-white border-none shadow-xl">
             <CardHeader>
               <CardTitle className="text-lg font-bold border-none flex items-center gap-2">
                 <Info size={18} />

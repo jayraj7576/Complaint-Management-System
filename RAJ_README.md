@@ -292,53 +292,48 @@ I just needed to pass `complaint.attachments` to it.
 
 ---
 
-## 🌟 Chapter 5: What I Learned
+## 🚀 Chapter 6: Phase 4 — Admin UI Modernization & Report Generation
 
-### Component Reuse
-The most powerful lesson: Atharva wrote `<AdvancedSearch />`, `<HistoryTimeline />`, and `<AttachmentGallery />` once. Jayraj used them on the user dashboard. I used the exact same components on the admin panel. This is called **component reusability** — write once, use everywhere. It saves huge amounts of time and keeps the design consistent!
+In the final phase of development, our focus shifted from adding raw features to **refining the user experience (UX)** and ensuring the system is professional, stable, and ready for production.
 
-### Building Query Strings
-I learned how to convert filter objects into URL query strings using `URLSearchParams`. This is a common real-world pattern for building API requests with multiple parameters.
+### Admin Panel Modernization
+I transitioned the entire Admin Panel from the legacy dark-slate styles to a **Premium Light Theme**. 
+- **Design System**: Switched `slate-900` backgrounds for `slate-50` and `white`.
+- **Accents**: Standardized on `blue-600` for primary actions and buttons.
+- **Visual Depth**: Added subtle shadows (`shadow-sm`, `shadow-md`) to cards to make the interface feel more layered and modern.
 
-### `Promise.all` vs Sequential `fetch`
-When loading the complaint details AND the history, I could do them one after another (sequential), or both at the same time (parallel). I learned to use parallel loading for better performance:
-```javascript
-// ✅ Parallel — faster
-const [complaintRes, historyRes] = await Promise.all([
-  fetch(`/api/complaints/${id}`),
-  fetch(`/api/complaints/${id}/history`),
-]);
-```
+### Admin Reports Dashboard & Export Integration
+A critical administrative requirement was the ability to monitor system health and generate official reports. I integrated a new **"Reports Dashboard"**:
+- **Visual Analytics**: Added a high-level dashboard with charts showing complaint trends, category distribution, and department performance.
+- **Excel & PDF Export**: I implemented a prominent export system on the Reports page. This allows admins to download the entire system database as a formatted **Excel spreadsheet** or professional **PDF documents**.
+- **Context Handling**: The export system triggers specialized APIs (developed with Atharva) that handle complex data aggregation and multi-format buffers.
+- **API Connection**: I linked the dynamic export buttons to the `GET /api/reports/export` and `GET /api/complaints/[id]/report` endpoints.
 
 ---
 
 ## 🏁 Conclusion
 
-My Week 3 contribution was focused and precise — take Atharva's powerful new components and make sure the **admin side** of the application has the same capabilities as the user side.
+My contributions across Phase 3 and Phase 4 have ensured that the **Admin Side** of the Complaint Management System is not just functional, but powerful and visually premium. By integrating Atharva's advanced components and modernizing the UI, I helped create a tool that is genuinely useful for college administrators.
 
-### My Deliverables
+### My Final Deliverables
 
-| Feature | File Modified |
-|---------|--------------|
-| AdvancedSearch on admin complaints list | `app/admin/complaints/page.jsx` |
-| HistoryTimeline on admin complaint detail | `app/admin/complaints/[id]/page.jsx` |
-| AttachmentGallery on admin complaint detail | `app/admin/complaints/[id]/page.jsx` |
-
-By doing this integration work, admins can now:
-- ✅ Search and filter hundreds of complaints instantly
-- ✅ See the full history/audit trail of any complaint
-- ✅ View and download attached photos and documents
+| Feature | Phase | File |
+|---------|-------|------|
+| AdvancedSearch Integration | Phase 3 | `app/admin/complaints/page.jsx` |
+| History & Gallery Integration | Phase 3 | `app/admin/complaints/[id]/page.jsx` |
+| **UI Modernization (Light Theme)** | **Phase 4** | **Global Styling / Layouts** |
+| **PDF Report Download** | **Phase 4** | **`app/admin/complaints/[id]/page.jsx`** |
 
 ---
 
-## 👥 Complete Team Division
+## 👥 Complete Team Division (All Phases)
 
-| Member | Role | Contributions |
-|--------|------|--------------|
-| **Jayraj Nawhale** | User Frontend | Login, Register, Home pages + AdvancedSearch on user dashboard + Notifications nav link |
-| **Shubham Mirarkar** | Backend | All complaint APIs + status/remarks APIs + Advanced Search API enhancement + Pagination |
-| **Atharva Bhujbal** | Advanced Features | Notifications, History, File Upload, Escalation, Charts, Bulk Operations, all lib helpers |
-| **Raj Vairat** *(me)* | Admin Frontend | AdvancedSearch on admin page + HistoryTimeline + AttachmentGallery on admin detail |
+| Member | Role | Phase 4 Contributions |
+|--------|------|-----------------------|
+| **Jayraj Nawhale** | User Frontend | Profile Avatar Management & UI Premium Polish |
+| **Shubham Mirarkar** | Backend APIs | API Hardening & Verification Status Fixes |
+| **Atharva Bhujbal** | Advanced Features | PDF Generation Engine & Advanced Logging |
+| **Raj Vairat** *(me)* | Admin Frontend | Admin UI Modernization & Report Download |
 
 ---
 

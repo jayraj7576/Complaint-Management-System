@@ -275,47 +275,55 @@ Upload a file attachment.
 ## 📊 Reports (Phase 4 — Shubham)
 
 ### GET `/api/reports/overview`
-Comprehensive report data for the reports page.  
+Comprehensive aggregated report data for dashboard visualizations.
 **Auth:** Required | **Role:** ADMIN
 
-**Query Params:** `startDate`, `endDate`
+**Query Params:** `dateFrom`, `dateTo` (YYYY-MM-DD)
 
 **Response:**
 ```json
 {
   "success": true,
-  "overview": { "totalComplaints": 150, "resolved": 120, "pending": 20, "resolutionRate": 80, "avgResolutionTime": "2.5 days" },
-  "byCategory": [...],
-  "byStatus": [...],
-  "monthlyTrend": [...]
+  "stats": {
+    "status": [ { "name": "PENDING", "value": 10 }, ... ],
+    "category": [ { "name": "ACADEMIC", "count": 15 }, ... ],
+    "departments": [ { "dept": "Computer", "total": 20, "resolved": 15 }, ... ],
+    "trend": [ { "month": "Jan", "year": 2025, "total": 40, "resolved": 35 }, ... ]
+  }
 }
 ```
 
 ---
 
-### GET `/api/reports/export/pdf`
-Download a PDF report.  
-**Auth:** Required | **Role:** ADMIN  
-**Response:** `application/pdf` binary download
+### GET `/api/reports/export`
+Stream a formatted document report based on filters.
+**Auth:** Required | **Role:** ADMIN
 
----
+**Query Params:**
+| Param | Type | Description |
+|-------|------|-------------|
+| `format` | string | `pdf` or `excel` |
+| `dateFrom` | date | Start date |
+| `dateTo` | date | End date |
 
-### GET `/api/reports/export/excel`
-Download an Excel report.  
-**Auth:** Required | **Role:** ADMIN  
-**Response:** `.xlsx` binary download
+**Response:** Binary stream of the requested file format.
 
 ---
 
 ## 👤 User Profile (Phase 4 — Shubham)
 
 ### PUT `/api/users/profile`
-Update user profile (name, phone).  
+Update personal details of the logged-in user.
 **Auth:** Required
 
 **Request Body:**
 ```json
-{ "name": "New Name", "phone": "9876543210" }
+{ "name": "Rahul Sharma", "phone": "9876543210", "department": "Computer" }
+```
+
+**Response:**
+```json
+{ "success": true, "user": { "name": "Rahul Sharma", ... } }
 ```
 
 ---
@@ -341,16 +349,28 @@ Upload profile avatar.
 ## ⚙️ Admin Settings (Phase 4 — Shubham)
 
 ### GET `/api/admin/settings`
-Get all settings.  
+Retrieve all system configuration keys.
 **Auth:** Required | **Role:** ADMIN
 
-### PUT `/api/admin/settings`
-Update settings.  
+**Response:**
+```json
+{ "success": true, "settings": [ { "key": "appName", "value": "CMS", ... }, ... ] }
+```
+
+---
+
+### POST `/api/admin/settings`
+Bulk update or create system settings.
 **Auth:** Required | **Role:** ADMIN
 
 **Request Body:**
 ```json
-{ "category": "general", "settings": { "appName": "CMS", "timezone": "Asia/Kolkata" } }
+{ "appName": "JSPM-CMS", "allowEscalation": true, "maintenanceMode": false }
+```
+
+**Response:**
+```json
+{ "success": true, "message": "Settings updated successfully" }
 ```
 
 ---

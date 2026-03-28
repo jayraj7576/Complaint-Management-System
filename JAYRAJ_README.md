@@ -898,31 +898,48 @@ const sidebarItems = [
 
 ## 🗓️ Phase 4 — My Tasks (Final Phase)
 
-I am responsible for the **User Profile page, Admin Settings UI, and main README**.
+## 🚀 Chapter 13: Phase 4 — Profile Avatar Management & UI Premium Polish
 
-| # | Task | File |
-|---|------|------|
-| 1 | User Profile page — name, email, phone, role, avatar display | `app/dashboard/profile/page.jsx` |
-| 2 | `ProfileForm` — edit name and phone | `components/profile/ProfileForm.jsx` |
-| 3 | `PasswordForm` — change password, strength indicator | `components/profile/PasswordForm.jsx` |
-| 4 | `AvatarUpload` — pick and preview profile photo | `components/profile/AvatarUpload.jsx` |
-| 5 | Admin Settings page (UI only, calls Shubham's APIs) | `app/admin/settings/page.jsx` |
-| 6 | Update main README.md with complete project docs | `README.md` |
+In Phase 4, I took our functional system and gave it a "Premium" look and feel, while also solving the technical challenges of profile management.
 
-### Profile Page Structure
+### Profile Security & Password Management
+I enhanced the user settings with a dedicated security layer:
+- **Change Password**: Developed the frontend interface and integrated the backend API for secure password updates with real-time validation.
+- **Account Protection**: Added "Secure Session" indicators to help users understand their login status and protect their accounts.
+- **State Synchronization**: When a user changes their avatar or security settings, the entire site reflects these changes instantly without page refreshes.
 
-The profile page composes three sub-components:
-- `AvatarUpload` — shows current avatar, lets user pick a new image file and preview it instantly (no upload until Save is clicked)
-- `ProfileForm` — controlled inputs for name and phone; calls `PUT /api/users/profile` on submit
-- `PasswordForm` — current password + new password + confirm; shows strength bar; calls `PUT /api/users/password`
+### UI Premium Modernization
+I led the effort to transition the User Dashboard to a **Unified Light Theme**:
+- **Visibility**: Replaced dark backgrounds with a crisp `slate-50` and `white` palette, significantly improving readability.
+- **Micro-interactions**: Added smooth hover states and transition animations to all sidebar links and buttons.
+- **Consistent Accents**: Standardized the use of `blue-600` for all primary user actions, making the interface feel cohesive across every page.
 
-### What I Am Learning in Phase 4
+---
 
-**Controlled Forms:** Every character updates React state immediately, enabling real-time validation feedback.
+## 🏁 Conclusion: The Full Project Picture
 
-**Avatar Preview Before Upload:** Use `URL.createObjectURL(file)` to display the chosen image locally before sending it to the server — makes the UI feel instant.
+From building the first Login page in Week 1 to polishing the final Profile page in Phase 4, I have seen this project grow into a complete, professional application. My focus has always been the **User Experience**—making sure every student and teacher feels that the system is easy to use and beautiful to look at.
 
-**Password Strength:** Check for length, uppercase, digits, and symbols and show a color-coded bar so users know how strong their password is.
+### Final Deliverables
+
+| Feature | Phase | What I Built |
+|---------|-------|--------------|
+| **Premium UI Overhaul** | **Phase 4** | Transformed the entire site to a modern light theme with consistent accents |
+| **Profile Avatar System** | **Phase 4** | Secure, Windows-compatible file upload for user bio photos |
+| **Authentication Flow** | Phase 1 | The complete Login, Register, and Session management system |
+| **User Dashboard** | Phase 2 | The main landing area where students manage their complaints |
+| **Notification Bell** | Phase 3 | Integrated Atharva's live notification alert system into the UI |
+
+---
+
+## 👥 Complete Team Division (All Phases)
+
+| Member | Role | Phase 4 Contributions |
+|--------|------|-----------------------|
+| **Jayraj Nawhale** *(me)* | User Frontend | Profile Avatar System & UI Premium Polish |
+| **Shubham Mirarkar** | Backend APIs | API Hardening & Verification Status logic |
+| **Atharva Bhujbal** | Advanced Features | PDF Engine & Advanced System Logging |
+| **Raj Vairat** | Admin Frontend | Admin UI Modernization & Report Download |
 
 ---
 
@@ -931,3 +948,4 @@ The profile page composes three sub-components:
 *JSPM's Jayawantrao Sawant Polytechnic, Pune*
 *Computer Engineering Department — TYCO3*
 *Academic Year 2025-26*
+*GitHub: [@jayrajnawhale](https://github.com/jayrajnawhale)*

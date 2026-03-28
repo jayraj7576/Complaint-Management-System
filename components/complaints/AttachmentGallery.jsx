@@ -6,24 +6,24 @@ import { X, Download, FileText, ZoomIn } from 'lucide-react';
 function ImageLightbox({ src, alt, onClose }) {
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-white/95 flex items-center justify-center p-4 backdrop-blur-2xl animate-in fade-in duration-300"
       onClick={onClose}
     >
       <div className="relative max-w-4xl max-h-full" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={onClose}
-          className="absolute -top-10 right-0 text-white hover:text-slate-300"
+          className="absolute -top-12 right-0 p-2 bg-slate-100 text-slate-800 hover:bg-slate-200 rounded-full transition-colors shadow-sm"
         >
           <X className="h-6 w-6" />
         </button>
-        <img src={src} alt={alt} className="max-w-full max-h-[80vh] object-contain rounded-lg" />
+        <img src={src} alt={alt} className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl border-4 border-white" />
         <a
           href={src}
           download={alt}
-          className="absolute bottom-3 right-3 bg-white/90 hover:bg-white text-slate-800 rounded-lg px-3 py-1.5 text-sm font-medium flex items-center gap-1"
+          className="absolute bottom-5 right-5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-5 py-2.5 text-sm font-black flex items-center gap-2 shadow-xl shadow-blue-100 transition-all active:scale-95"
         >
           <Download className="h-4 w-4" />
-          Download
+          Download Asset
         </a>
       </div>
     </div>
@@ -53,7 +53,7 @@ export default function AttachmentGallery({ attachments = [] }) {
               <button
                 key={i}
                 onClick={() => { setLightboxSrc(img.filePath); setLightboxName(img.fileName); }}
-                className="relative aspect-square rounded-lg overflow-hidden border border-slate-200 group"
+                className="relative aspect-square rounded-lg overflow-hidden border border-slate-200 group shrink-0"
               >
                 <img
                   src={img.filePath}
@@ -73,7 +73,7 @@ export default function AttachmentGallery({ attachments = [] }) {
           <div className="space-y-2">
             {pdfs.map((pdf, i) => (
               <div key={i} className="flex items-center gap-3 p-3 bg-red-50 border border-red-100 rounded-lg">
-                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
                   <FileText className="h-5 w-5 text-red-600" />
                 </div>
                 <div className="flex-1 min-w-0">

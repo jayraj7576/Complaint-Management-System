@@ -65,15 +65,20 @@ export async function GET(request) {
 
     await connectDB();
 
-    // Check if user is admin
     const User = (await import('@/models/User')).default;
     const user = await User.findById(userId);
 
-    if (!user || user.role !== 'ADMIN') {
+    if (!user || (user.role !== 'ADMIN' && user.role !== 'DEPARTMENT_HEAD')) {
       return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);
+
+    // ── Build filter object ────────────────────────────────────
+    const filter = {};
+    if (user.role === 'DEPARTMENT_HEAD') {
+        filter.department = user.department;
+    }
 
     // ── Filters ────────────────────────────────────────────────
     const status   = searchParams.get('status');
@@ -88,36 +93,10 @@ export async function GET(request) {
     const limit = Math.min(500, parseInt(searchParams.get('limit') || '50'));
     const skip  = (page - 1) * limit;
 
-    // ── Build filter object ────────────────────────────────────
-    const filter = {};
-
-    if (status)   filter.status   = status;
-    if (category) filter.category = category;
-    if (priority) filter.priority = priority;
-
-    // Full-text search against title, description, ticketId
-    if (search) {
-      filter.$or = [
-        { title:       { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-        { ticketId:    { $regex: search, $options: 'i' } },
-      ];
-    }
-
-    // Date range on createdAt
-    if (dateFrom || dateTo) {
-      filter.createdAt = {};
-      if (dateFrom) filter.createdAt.$gte = new Date(dateFrom);
-      if (dateTo) {
-        const end = new Date(dateTo);
-        end.setHours(23, 59, 59, 999);
-        filter.createdAt.$lte = end;
-      }
-    }
-
     // ── Query ──────────────────────────────────────────────────
     const [complaints, totalFiltered] = await Promise.all([
       Complaint.find(filter)
+        .select('ticketId title category priority status createdAt userId department')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)

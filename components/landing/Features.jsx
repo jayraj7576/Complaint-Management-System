@@ -9,55 +9,55 @@ export default function Features() {
       icon: FileText,
       title: 'Easy Complaint Filing',
       description: 'Submit complaints through a simple web interface with automatic ticket generation.',
-      color: 'text-blue-600 dark:text-blue-400',
-      bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-100',
     },
     {
       icon: Users,
       title: 'Role-Based Access',
       description: 'Different dashboards for users, admins, and department heads with appropriate permissions.',
-      color: 'text-purple-600 dark:text-purple-400',
-      bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-100',
     },
     {
       icon: TrendingUp,
       title: 'Track Progress',
       description: 'Monitor complaint status in real-time from submission to resolution.',
-      color: 'text-green-600 dark:text-green-400',
-      bgColor: 'bg-green-100 dark:bg-green-900/30',
+      color: 'text-green-600',
+      bgColor: 'bg-green-100',
     },
     {
       icon: Bell,
       title: 'Instant Notifications',
       description: 'Get notified about status updates and resolutions via email and in-app alerts.',
-      color: 'text-orange-600 dark:text-orange-400',
-      bgColor: 'bg-orange-100 dark:bg-orange-900/30',
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-100',
     },
     {
       icon: Clock,
       title: 'Faster Resolution',
       description: 'Automated assignment and tracking reduces response time significantly.',
-      color: 'text-red-600 dark:text-red-400',
-      bgColor: 'bg-red-100 dark:bg-red-900/30',
+      color: 'text-red-600',
+      bgColor: 'bg-red-100',
     },
     {
       icon: BarChart,
       title: 'Analytics & Reports',
       description: 'Generate detailed reports for analysis and continuous improvement.',
-      color: 'text-indigo-600 dark:text-indigo-400',
-      bgColor: 'bg-indigo-100 dark:bg-indigo-900/30',
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-100',
     },
   ];
 
   return (
-    <div className="bg-white py-24 dark:bg-gray-900 sm:py-32">
+    <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="mb-16 text-center">
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Powerful Features
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-300">
+          <p className="mx-auto max-w-2xl text-lg text-gray-600">
             Everything you need to manage complaints efficiently and transparently
           </p>
         </div>

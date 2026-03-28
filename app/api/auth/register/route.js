@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
-import { createUser, getUserWithoutPassword } from '@/lib/mock-db.js';
+import connectDB from '@/lib/db.js';
+import User from '@/models/User.js';
+import { hashPassword } from '@/lib/hash.js';
 
 export async function POST(req) {
   try {
-    const { name, email, password, phone } = await req.json();
+    const { name, email, password, phone, role, department } = await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -20,35 +22,47 @@ export async function POST(req) {
       );
     }
 
-    try {
-      // Create user in mock database
-      const user = createUser({
-        name,
-        email,
-        password,
-        phone: phone || '',
-        department: 'General',
-      });
+    await connectDB();
 
-      // Return user without password
-      const userWithoutPassword = getUserWithoutPassword(user);
-
+    // Check if user already exists
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
       return NextResponse.json(
-        { 
-          message: 'User registered successfully', 
-          user: userWithoutPassword 
-        },
-        { status: 201 }
+        { error: 'User already exists with this email' },
+        { status: 400 }
       );
-    } catch (error) {
-      if (error.message === 'User already exists') {
-        return NextResponse.json(
-          { error: 'User already exists with this email' },
-          { status: 400 }
-        );
-      }
-      throw error;
     }
+
+    // Hash the password
+    const hashedPassword = await hashPassword(password);
+
+    // Create user in real database
+    const user = await User.create({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      phone: phone || '',
+      role: role || 'USER', // Allow staff registration if role provided
+      department: department || 'General',
+      status: 'PENDING', // Forced pending until approved
+    });
+
+    // Prepare response (sanitize password)
+    const userResponse = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      status: user.status,
+    };
+
+    return NextResponse.json(
+      { 
+        message: 'User registered successfully', 
+        user: userResponse
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(

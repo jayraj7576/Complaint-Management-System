@@ -1,6 +1,6 @@
 import dbConnect from '../lib/db.js';
 import User from '../models/User.js';
-import { hashPassword } from '../lib/auth.js';
+import { hashPassword } from '../lib/hash.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env.local' });

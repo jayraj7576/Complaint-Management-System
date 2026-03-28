@@ -35,10 +35,14 @@ export async function GET(request) {
       { $group: { _id: '$status', count: { $sum: 1 } } }
     ]);
 
-    // 2. Category distribution
+    // 2. Category distribution with resolution tracking
     const categoryStats = await Complaint.aggregate([
       { $match: query },
-      { $group: { _id: '$category', count: { $sum: 1 } } }
+      { $group: { 
+          _id: '$category', 
+          count: { $sum: 1 },
+          resolved: { $sum: { $cond: [{ $eq: ['$status', 'RESOLVED'] }, 1, 0] } }
+      } }
     ]);
 
     // 3. Department distribution
@@ -76,7 +80,7 @@ export async function GET(request) {
       success: true,
       stats: {
         status: statusStats.map(s => ({ name: s._id, value: s.count })),
-        category: categoryStats.map(c => ({ name: c._id, count: c.count })),
+        category: categoryStats.map(c => ({ name: c._id, count: c.count, resolved: c.resolved })),
         departments: deptStats.map(d => ({ dept: d._id || 'Unassigned', total: d.total, resolved: d.resolved })),
         trend: monthlyTrend.map(m => ({
             month: new Date(m._id.year, m._id.month - 1).toLocaleString('default', { month: 'short' }),

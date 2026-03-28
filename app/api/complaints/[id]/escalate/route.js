@@ -27,12 +27,13 @@ export async function POST(req, { params }) {
       return NextResponse.json({ success: false, error: 'Complaint not found' }, { status: 404 });
     }
 
-    // Only the owner or an admin can escalate
-    const user = await User.findById(userId).select('role').lean();
+    // Only the owner, admin, or department head can escalate
+    const user = await User.findById(userId).select('role department').lean();
     const isOwner = complaint.userId.toString() === userId;
     const isAdmin = user?.role === 'ADMIN';
+    const isDeptHead = user?.role === 'DEPARTMENT_HEAD' && complaint.department === user?.department;
 
-    if (!isOwner && !isAdmin) {
+    if (!isOwner && !isAdmin && !isDeptHead) {
       return NextResponse.json({ success: false, error: 'Permission denied' }, { status: 403 });
     }
 

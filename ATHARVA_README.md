@@ -821,60 +821,50 @@ After uploading successfully, the image preview wasn't appearing.
 
 ---
 
-## 🏁 Conclusion: The Full Week 3 Picture
+## 🚀 Chapter 13: Phase 4 — PDF Generation Engine & Advanced Logging
 
-Week 3 transformed our Complaint Management System from a simple data entry tool into a **smart, interactive platform**. Here is a summary of everything I delivered:
+In the final phase of our project, I focused on system robustness and official reporting capabilities. This moved the system from a "prototype" to a "production-ready" application.
 
-### Features Delivered
+### The Professional Reporting Engine (`lib/pdf.js` & `lib/excel.js`)
+I built a centralized reporting engine that supports both PDF and Excel formats:
+- **PDF Generation**: Automatically creates professional tables, headers, and footers for individual complaint summaries using `jspdf`.
+- **Excel Export**: I added the `XLSX` (SheetJS) integration to allow admins to download the entire system database as a formatted spreadsheet for offline analysis.
+- **Reporting APIs**: I developed the `GET /api/reports/export` route which handles multiple formats via a single, efficient endpoint.
 
-| Feature | What It Does |
-|---------|-------------|
-| **Notification System** | Automatically notifies users of every status change, comment, or resolution |
-| **Notification Bell** | Live badge in header, dropdown with last 5 notifications, 30-second polling |
-| **Notifications Page** | Full history with tabs (All/Unread/by type), pagination |
-| **File Upload API** | Secure upload with file type + size validation |
-| **FileUpload Component** | Drag-friendly picker with preview and remove buttons |
-| **AttachmentGallery** | Image lightbox, PDF viewer/downloader |
-| **History Timeline** | Color-coded vertical timeline of every complaint change |
-| **Escalation System** | APIRoute + modal component for escalating stuck complaints |
-| **Dashboard Charts** | Three responsive Recharts visualizations |
-| **Bulk Operations** | Three admin APIs for bulk status update, assign, and soft-delete |
-| **Advanced Search** | Debounced text + multi-filter panel + active filter chips |
-| **Date Helpers** | `formatTimeAgo()`, `formatDate()`, `formatDateTime()` used everywhere |
-
-### The Week 3 Data Flow
-
-```
-Admin changes complaint status
-         ↓
-Status Update API fires
-         ↓
-recordHistory() records the change in ComplaintHistory collection
-         ↓  
-notifyStatusChange() creates a Notification document for the student
-         ↓
-Student's NotificationBell polls /api/notifications every 30 seconds
-         ↓
-Red badge appears: "You have 1 new notification!"
-         ↓
-Student clicks bell → sees "Complaint CMP-20250115 → In Progress"
-         ↓
-Student clicks notification → navigates to the complaint detail page
-         ↓
-Student sees HistoryTimeline showing the full audit trail!
-```
-
-Every piece works together as a connected system, and I am very proud of what Week 3 has added to our group's project!
+### Advanced Logging & Stability
+To solve intermittent bugs and ensure 100% uptime, I implemented a new logging architecture:
+- **DB Connection Monitoring**: Enhanced `lib/db.js` with detailed connection state logging (initializing, connected, error) to pinpoint database issues immediately.
+- **API Diagnostics**: Added detailed error reporting to the `/api/auth/me` endpoint to catch silent failures in the authentication flow.
+- **Performance Indexing**: I added specialized MongoDB indexes to the `Notification` and `ComplaintHistory` models to keep the system fast as data grows.
 
 ---
 
-## 👥 Team Division Reference
+## 🏁 Conclusion: The Full Project Picture
 
-| Team Member | Week 3 Tasks |
-|-------------|--------------|
-| **Atharva Bhujbal** | Notification model & APIs, File upload system, History model & APIs, Escalation API, All 3 chart components, Bulk operation APIs, AdvancedSearch component, All lib helpers (notifications.js, history.js, upload.js, dateUtils.js) |
-| **Jayraj Nawhale** | Integrating NotificationBell into Sidebar, Integrating FileUpload into complaint form, Integrating AttachmentGallery into complaint detail page |
-| **Shubham Mirarkar** | Connecting history recording & notifications to existing status/remarks APIs, Admin dashboard chart data aggregation queries |
+Across Phases 3 and 4, I have evolved the architecture of the Complaint Management System into a robust, enterprise-grade platform. From live notifications to professional PDF reports, every advanced feature was designed with **scalability and reliability** in mind.
+
+### Final Features Delivered
+
+| Feature | Phase | What It Does |
+|---------|-------|-------------|
+| **Professional Reporting** | **Phase 4** | Generates official PDF and Excel documents for data analysis |
+| **Advanced Logging** | **Phase 4** | Real-time monitoring of DB connections and API health |
+| **Notification System** | Phase 3 | Automatically notifies users of status changes and comments |
+| **History Timeline** | Phase 3 | Visual audit trail of every database mutation |
+| **FileUpload/Gallery** | Phase 3 | Secure attachment management with image lightboxes |
+| **Bulk Operations** | Phase 3 | High-efficiency admin tools for managing hundreds of cases |
+| **DB Optimization** | **Phase 4** | Strategic indexing for ultra-fast notification polling |
+
+---
+
+## 👥 Complete Team Division (All Phases)
+
+| Member | Role | Phase 4 Contributions |
+|--------|------|-----------------------|
+| **Jayraj Nawhale** | User Frontend | Profile Avatar System & UI Premium Polish |
+| **Shubham Mirarkar** | Backend APIs | API Hardening & Verification Status logic |
+| **Atharva Bhujbal** *(me)* | Advanced Features | PDF Engine & Advanced System Logging |
+| **Raj Vairat** | Admin Frontend | Admin UI Modernization & Report Download |
 
 ---
 
@@ -883,3 +873,4 @@ Every piece works together as a connected system, and I am very proud of what We
 *JSPM's Jayawantrao Sawant Polytechnic, Pune*
 *Computer Engineering Department — TYCO3*
 *Academic Year 2025-26*
+*GitHub: [@atharvabhujbal](https://github.com/atharvabhujbal)*

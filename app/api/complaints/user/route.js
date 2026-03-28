@@ -41,6 +41,7 @@ export async function GET(request) {
     // ── Query ──────────────────────────────────────────────────
     const [complaints, total] = await Promise.all([
       Complaint.find(filter)
+        .select('ticketId title category priority status createdAt')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)

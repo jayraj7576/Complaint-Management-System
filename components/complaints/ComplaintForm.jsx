@@ -87,7 +87,7 @@ const ComplaintForm = ({ onSubmit, initialValues, onCancel }) => {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel className="text-sm font-bold text-slate-700">Complaint Title</FormLabel>
               <FormControl>
                 <Input placeholder="Brief summary of the issue (e.g. AC Not Working)" {...field} />
               </FormControl>
@@ -101,7 +101,7 @@ const ComplaintForm = ({ onSubmit, initialValues, onCancel }) => {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel className="text-sm font-bold text-slate-700">Detailed Description</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Provide detailed information about the issue..."
@@ -120,7 +120,7 @@ const ComplaintForm = ({ onSubmit, initialValues, onCancel }) => {
             name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Category</FormLabel>
+                <FormLabel className="text-sm font-bold text-slate-700">Category</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -147,7 +147,7 @@ const ComplaintForm = ({ onSubmit, initialValues, onCancel }) => {
             name="priority"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Priority</FormLabel>
+                <FormLabel className="text-sm font-bold text-slate-700">Priority Level</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -171,7 +171,7 @@ const ComplaintForm = ({ onSubmit, initialValues, onCancel }) => {
             name="department"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Department</FormLabel>
+                <FormLabel className="text-sm font-bold text-slate-700">Assigned Department</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -196,7 +196,7 @@ const ComplaintForm = ({ onSubmit, initialValues, onCancel }) => {
           />
         </div>
 
-        <div className="flex justify-end gap-4 pt-4 border-t">
+        <div className="flex justify-end gap-4 pt-6 border-t border-slate-100">
           {onCancel && (
             <Button
               type="button"

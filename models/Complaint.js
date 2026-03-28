@@ -87,8 +87,7 @@ ComplaintSchema.pre('save', async function (next) {
 });
 
 // Performance indexes
-ComplaintSchema.index({ ticketId: 1 }, { unique: true });
-ComplaintSchema.index({ userId: 1 });
+// Explicit index removed, using schema-level unique: true
 ComplaintSchema.index({ status: 1 });
 ComplaintSchema.index({ createdAt: -1 });
 ComplaintSchema.index({ category: 1, status: 1 });

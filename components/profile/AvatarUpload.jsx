@@ -60,7 +60,7 @@ export default function AvatarUpload({ currentAvatar, onUpdate }) {
           )}
           
           {uploading && (
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
               <Loader2 className="h-6 w-6 animate-spin text-white" />
             </div>
           )}

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -83,9 +84,11 @@ export default function ComplaintList({ complaints = [], userRole }) {
                   <span>{complaint.category}</span>
                 </div>
               </div>
-              <Button variant="outline" size="sm">
-                View Details
-              </Button>
+              <Link href={['ADMIN', 'DEPARTMENT_HEAD'].includes(userRole) ? `/admin/complaints/${complaint._id}` : `/complaints/${complaint._id}`}>
+                <Button variant="outline" size="sm" className="hover:bg-blue-50 hover:text-blue-600 border-slate-200">
+                  View Details
+                </Button>
+              </Link>
             </div>
           ))}
         </div>

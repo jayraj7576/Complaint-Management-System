@@ -28,7 +28,7 @@ export default function Error({ error, reset }) {
         </div>
 
         <div className="flex flex-col gap-3 pt-4">
-          <Button onClick={() => reset()} className="w-full bg-slate-900 hover:bg-black font-semibold shadow-lg">
+          <Button onClick={() => reset()} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 rounded-2xl shadow-lg shadow-blue-100 border-none transition-all">
             <RotateCcw size={16} className="mr-2" /> Reset Application
           </Button>
           <Button variant="ghost" asChild className="w-full text-slate-500 hover:text-slate-700">
