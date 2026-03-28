@@ -2,69 +2,63 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { FileText, Table2, Loader2 } from 'lucide-react';
+import { FileDown, Table, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ExportButtons({ startDate, endDate }) {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [excelLoading, setExcelLoading] = useState(false);
 
-  const buildQuery = () => {
-    const params = new URLSearchParams();
-    if (startDate) params.set('startDate', startDate);
-    if (endDate)   params.set('endDate', endDate);
-    return params.toString();
-  };
-
-  const handlePDF = async () => {
-    setPdfLoading(true);
+  const handleExport = async (format) => {
+    const setLoader = format === 'pdf' ? setPdfLoading : setExcelLoading;
+    setLoader(true);
+    
     try {
-      const res = await fetch(`/api/reports/export/pdf?${buildQuery()}`);
-      if (!res.ok) throw new Error('PDF generation failed');
+      const params = new URLSearchParams({ format });
+      if (startDate) params.set('dateFrom', startDate);
+      if (endDate)   params.set('dateTo', endDate);
+      
+      const res = await fetch(`/api/reports/export?${params.toString()}`);
+      if (!res.ok) throw new Error(`${format.toUpperCase()} generation failed`);
+      
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `report-${Date.now()}.pdf`;
+      a.download = `CMS_Report_${new Date().toISOString().split('T')[0]}.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast.success('PDF downloaded successfully');
+      
+      toast.success(`${format.toUpperCase()} report generated successfully`);
     } catch (err) {
-      toast.error('Failed to generate PDF');
+      console.error(err);
+      toast.error(`Failed to generate ${format.toUpperCase()} report`);
     } finally {
-      setPdfLoading(false);
-    }
-  };
-
-  const handleExcel = async () => {
-    setExcelLoading(true);
-    try {
-      const res = await fetch(`/api/reports/export/excel?${buildQuery()}`);
-      if (!res.ok) throw new Error('Excel generation failed');
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `report-${Date.now()}.xlsx`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast.success('Excel downloaded successfully');
-    } catch (err) {
-      toast.error('Failed to generate Excel');
-    } finally {
-      setExcelLoading(false);
+      setLoader(false);
     }
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <Button variant="outline" size="sm" onClick={handlePDF} disabled={pdfLoading}>
-        {pdfLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <FileText className="h-4 w-4 mr-1" />}
-        Export PDF
+    <div className="flex items-center gap-3">
+      <Button 
+        variant="outline" 
+        onClick={() => handleExport('pdf')} 
+        disabled={pdfLoading}
+        className="rounded-xl border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all font-semibold"
+      >
+        {pdfLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <FileDown className="h-4 w-4 mr-2" />}
+        PDF Report
       </Button>
-      <Button variant="outline" size="sm" onClick={handleExcel} disabled={excelLoading}>
-        {excelLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Table2 className="h-4 w-4 mr-1" />}
-        Export Excel
+      <Button 
+        variant="default"
+        onClick={() => handleExport('excel')} 
+        disabled={excelLoading}
+        className="rounded-xl bg-green-600 hover:bg-green-700 shadow-lg shadow-green-100 font-semibold"
+      >
+        {excelLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Table className="h-4 w-4 mr-2" />}
+        Excel Spreadsheet
       </Button>
     </div>
   );
