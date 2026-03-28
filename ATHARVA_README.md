@@ -836,6 +836,7 @@ To solve intermittent bugs and ensure 100% uptime, I implemented a new logging a
 - **DB Connection Monitoring**: Enhanced `lib/db.js` with detailed connection state logging (initializing, connected, error) to pinpoint database issues immediately.
 - **API Diagnostics**: Added detailed error reporting to the `/api/auth/me` endpoint to catch silent failures in the authentication flow.
 - **Performance Indexing**: I added specialized MongoDB indexes to the `Notification` and `ComplaintHistory` models to keep the system fast as data grows.
+- **Dependency Balancing**: To ensure a flawless Vercel deployment, I synchronized the PDF library versions, resolving a critical peer dependency conflict between `jspdf` and `jspdf-autotable`.
 
 ---
 
